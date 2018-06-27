@@ -82,6 +82,7 @@ export default {
       "closeOpenLeagueMobile",
       "closeOpenLeagueDeskTop"
     ]),
+    ...mapActions("detailpredictions", ["hideDetail"]),
     closeOenSearch() {
       this.closeOpenLeagueDeskTop(false);
       this.clickSearch(!this.getIsSearching);
@@ -90,6 +91,10 @@ export default {
   mounted() {
     var seft = this;
     this.$root.$on("browserResize", function(data) {
+      if (data >= 672) {
+        seft.hideDetail(false);
+      }
+
       if (data >= 843) {
         seft.checkIsMobile(false);
         seft.closeOpenLeagueMobile(false);
@@ -108,7 +113,7 @@ export default {
   font-size: 16px;
   max-width: 1280px;
   min-width: 320px;
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
   ul {
@@ -192,6 +197,9 @@ export default {
   color: #4d4d4d !important;
   background-color: #fff;
 }
+.zindex {
+  z-index: -1 !important;
+}
 @media (min-width: 843px) {
   .menu-header {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
@@ -205,6 +213,16 @@ export default {
     color: #fff;
   }
 }
+// @media (min-width: 672px) {
+//   .menu-header {
+//     z-index: 1;
+//   }
+// }
+// @media (min-width: 320px) {
+//   .menu-header {
+//     z-index: 0;
+//   }
+// }
 </style>
 
 

@@ -17,7 +17,7 @@ export default {
 <style lang="scss" scoped>
 .box-league-desktop {
   position: absolute;
-  top: 100px;
+  top: 77px;
   width: 350px;
   background-color: #212121;
   height: 400px;

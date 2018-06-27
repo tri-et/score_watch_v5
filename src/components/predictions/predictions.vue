@@ -1,11 +1,11 @@
 <template>
   <div class="predictions">
     <!-- {{this.$root.browserWidth}} -->
-    <div class="left-col" @click="hideDetail(false)">
-      <div class="calendar">calandar</div>
+    <div class="left-col">
+      <calendar></calendar>
       <div class="predictions-container">
         <div class="inplay">inplay</div>
-        <div class="pregame">
+        <div class="pregame"  @click="hideDetail(false)">
           <ul>
             <li>2</li>
             <li>1</li>
@@ -61,6 +61,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import detailprediction from "./details/detailpredictions";
+import calendar from "./calendar";
 export default {
   computed: {
     ...mapGetters("detailpredictions", ["getIsHideDetail"])
@@ -69,7 +70,8 @@ export default {
     ...mapActions("detailpredictions", ["hideDetail"])
   },
   components: {
-    detailprediction
+    detailprediction,
+    calendar
   }
 };
 </script>
@@ -81,10 +83,6 @@ export default {
   width: 100%;
   display: flex;
   height: 100%;
-}
-.calendar {
-  height: 64px;
-  background-color: #212121;
 }
 .left-col {
   position: relative;

@@ -19,11 +19,13 @@ export default {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   max-width: 1280px;
   min-width: 320px;
   margin: auto;
-  position: relative;
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 100%;
   ::-webkit-scrollbar {
     width: 4px;
   }

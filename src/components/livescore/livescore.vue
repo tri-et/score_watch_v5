@@ -2,26 +2,12 @@
   <div class="livescore">
     <!-- {{this.$root.browserWidth}} -->
     <div class="left-col" @click="hideDetail(false)">
-      <div class="calendar">calandar</div>
+      <calendarlive></calendarlive>
       <div class="livescore-container">
         <div class="inplay">live score</div>
         <div class="pregame">
           <ul>
             <li>2</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
             <li>1</li>
             <li>1</li>
             <li>1</li>
@@ -53,7 +39,7 @@
         <div class="footer">All Right Reserved. © 2018. Powered by In-Play</div>
       </div>
     </div>
-    <div class="right-col" :class="{'hide-right-col':getIsHideDetail}">
+    <div class="right-col" :class="{'hide-right-col':getIsHideDetailLiveScore}">
       <detailprediction></detailprediction>
     </div>
   </div>
@@ -61,6 +47,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import detailprediction from "./details/detaillivescore";
+import calendarlive from "./calendarLiveScore";
 export default {
   computed: {
     ...mapGetters("detaillivescore", ["getIsHideDetailLiveScore"])
@@ -69,7 +56,8 @@ export default {
     ...mapActions("detaillivescore", ["hideDetailLiveScore"])
   },
   components: {
-    detailprediction
+    detailprediction,
+    calendarlive
   }
 };
 </script>

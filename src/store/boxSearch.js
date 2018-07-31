@@ -1,6 +1,7 @@
 const state = {
     isOpenLeagueMobile: false,
-    isOpenLeagueDeskTop: false
+    isOpenLeagueDeskTop: false,
+    chekedLeagueName: []
 }
 const getters = {
     getIsOpenLeagueMobile: state => {
@@ -8,6 +9,9 @@ const getters = {
     },
     getIsOpenLeagueDeskTop: state => {
         return state.isOpenLeagueDeskTop
+    },
+    getchekedLeagueName: state => {
+        return state.chekedLeagueName
     }
 }
 const mutations = {
@@ -16,6 +20,9 @@ const mutations = {
     },
     setIsOpenLeagueDeskTop(state, value) {
         state.isOpenLeagueDeskTop = value
+    },
+    setchekedLeagueName(state, value) {
+        state.chekedLeagueName = value
     }
 }
 const actions = {
@@ -24,6 +31,9 @@ const actions = {
     },
     closeOpenLeagueDeskTop({ commit }, value) {
         commit('setIsOpenLeagueDeskTop', value)
+    },
+    checkLeague({ commit }, value) {
+        commit('setchekedLeagueName', value)
     }
 }
 export default {

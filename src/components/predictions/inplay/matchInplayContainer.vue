@@ -1,0 +1,201 @@
+<template>
+  <div class="match_pre_container">
+    <matchpre>
+      <template slot="match_time_ft">
+        <span>FT</span>
+        <span>{{match.match_dt|filterDateTime}}</span>
+      </template>
+      <template slot="match_team">
+        <span>{{match.team_home}}</span>
+        <span>{{match.team_away}}</span>
+      </template>
+      <template slot="match_score">
+        <span>{{match.score_home}}</span>
+        <span>{{match.score_away}}</span>
+      </template>
+    </matchpre>
+    <inplayprediction :marquee="marquee" :bg="bginplay">
+      <template slot="team_pick">
+        <span :class="{'marquee':marquee}">{{match.pick_hdp=="H"?match.team_home.trim():match.team_away.trim()}}</span>
+      </template>
+      <template slot="odd_score">
+        <span>{{'['+match.detail.score_home+':'+match.detail.score_away+'] '+match.detail.sys_hdp+' @'}}</span>
+        <oddou :items="{'odd':match.detail.pick_hdp=='H'?match.detail.sys_odds_home:match.detail.sys_odds_away,'match_code':match.detail.match_code}">
+        </oddou>
+      </template>
+    </inplayprediction>
+    <overunder :bg="bgover">
+      <template slot="over_under_pick">
+        <span>{{match.detail.pick_ou=="O"?"over":"under"}}</span>
+      </template>
+      <template slot="odd_over_under">
+        <span>{{'['+match.detail.score_home+':'+match.detail.score_away+'] '+match.detail.sys_hdp+' @'}}</span>
+        <span>{{match.detail.pick_ou=="O"?match.detail.sys_odds_over:match.detail.sys_odds_under}}</span>
+      </template>
+    </overunder>
+  </div>
+</template>
+<script>
+import matchpre from "./matchInPlay";
+import inplayprediction from "./inplayPrediction";
+import oddou from "./oddOu";
+import overunder from "./overUnder";
+import pred_gold from "@/assets/imgs/pred_gold.svg";
+import lose_icon from "@/assets/imgs/lose_icon@1x.svg";
+import win_icon from "@/assets/imgs/win_icon@1x.svg";
+import draw_icon from "@/assets/imgs/draw_icon@1x.svg";
+export default {
+  props: {
+    match: [Object],
+    type: [String]
+  },
+  data() {
+    return {
+      marquee: false,
+      bginplay: {
+        backgroundColor: "#FEE1E1",
+        color: "#000",
+        imgUrl: pred_gold
+      },
+      bgover: {
+        backgroundColor: "#FEE1E1",
+        color: "#000",
+        imgUrl: pred_gold
+      },
+      lose: {
+        imgUrl: lose_icon,
+        backgroundColor: "#F0F0F0",
+        color: "rgba(51,51,51,.45)"
+      },
+      win: {
+        imgUrl: win_icon,
+        backgroundColor: "#69AE72",
+        color: "#FFF"
+      },
+      draw: {
+        imgUrl: draw_icon,
+        backgroundColor: "#F0F0F0",
+        color: "rgba(51,51,51,.45)"
+      }
+    };
+  },
+  components: {
+    matchpre,
+    inplayprediction,
+    oddou,
+    overunder
+  },
+  filters: {
+    filterDateTime(value) {
+      var date = new Date(value.replace(/-/g, "/"));
+      return (
+        date.getHours() +
+        ":" +
+        (date.getMinutes() == 0 ? "00" : date.getMinutes())
+      );
+    }
+  },
+  methods: {
+    setMarquee() {
+      var inner = this.$el.querySelector(".team_pick").offsetWidth;
+      var outter = this.$el.querySelector(".team_pick span").offsetWidth - 1;
+      if (outter > inner) this.marquee = true;
+    },
+    setbgInPlay() {
+      switch (this.type) {
+        case "expired":
+          let hdp = parseFloat(this.match.detail.sys_hdp);
+          let score_home =
+            parseInt(this.match.score_home) +
+            (hdp > 0 ? hdp : 0) -
+            parseInt(this.match.detail.score_home);
+          let score_away =
+            parseInt(this.match.score_away) +
+            (hdp < 0 ? Math.abs(hdp) : 0) -
+            parseInt(this.match.detail.score_away);
+
+          if (this.match.detail.pick_hdp == "H") {
+            if (score_home > score_away) {
+              this.bginplay = this.win;
+            } else if (score_home < score_away) {
+              this.bginplay = this.lose;
+            } else {
+              this.bginplay = this.draw;
+            }
+          } else {
+            if (score_away > score_home) {
+              this.bginplay = this.win;
+            } else if (score_away < score_home) {
+              this.bginplay = this.lose;
+            } else {
+              this.bginplay = this.draw;
+            }
+          }
+          break;
+      }
+    },
+    setgbOver() {
+      let ou = parseFloat(this.match.detail.sys_ou);
+      let finalsocre =
+        parseInt(this.match.score_home) + parseInt(this.match.score_away);
+      if (this.type == "expired") {
+        switch (this.match.detail.pick_ou) {
+          case "O":
+            if (finalsocre > ou) {
+              this.bgover = this.win;
+            } else if (finalsocre < ou) {
+              this.bgover = this.lose;
+            } else {
+              this.bgover = this.draw;
+            }
+            break;
+          default:
+            if (ou > finalsocre) {
+              this.bgover = this.win;
+            } else if (ou < finalsocre) {
+              this.bgover = this.lose;
+            } else {
+              this.bgover = this.draw;
+            }
+            break;
+        }
+      } else {
+      }
+    }
+  },
+  created() {
+    this.setbgInPlay();
+    this.setgbOver();
+  },
+  mounted() {
+    this.setMarquee();
+    var seft = this;
+    this.$root.$on("browserResize", function(data) {
+      seft.setMarquee();
+    });
+  }
+};
+</script>
+<style lang="scss" scoped>
+.match_pre_container {
+  box-shadow: -1px -1px 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 8px;
+  &:last-of-type {
+    margin-bottom: 0px;
+  }
+}
+.marquee {
+  position: absolute;
+  animation: leftmarquee 5s linear infinite;
+}
+@keyframes leftmarquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+</style>
+
+

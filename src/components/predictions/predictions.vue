@@ -12,7 +12,7 @@
               <span>{{league}}</span>
             </leaguenamepre>
             <div class="match_container" :key="index+'macth_container_inplay'" :class="{'last':getLeagueInPlay.length==index+1}">
-              <matchprecontainer type="inplay" v-for="(match,index) in getMatchInPlay" :match="match" :key="index+'match_inplay'" v-if="league==match.league&&match.match_period!=''">
+              <matchprecontainer type="inplay" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay'" v-if="league==match.league && match.match_period!='FT'">
               </matchprecontainer>
             </div>
           </template>
@@ -23,142 +23,142 @@
               <span>{{league}}</span>
             </leaguenamepre>
             <div class="match_container" :key="index+'macth_container_inplay_exp'" :class="{'last':getLeagueInPlayExp.length==index+1}">
-              <!-- <matchprecontainer type="expired" v-for="(match,index) in getMatchInPlay" :match="match" :key="index+'match_inplay_exp'" v-if="league==match.league">
-              </matchprecontainer> -->
+              <matchprecontainer type="expired" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay_exp'" v-if="league==match.league && match.match_period=='FT'">
+              </matchprecontainer>
             </div>
           </template>
         </div>
-        <div class="pregame" @click="hideDetail(false)">
+        <div class="pregame " @click="hideDetail(false) ">
           <headerpre type="pregame">pregame</headerpre>
-          <nomatches :class="{'hide_no_matches':filterLeaguePregame.length!=0}"></nomatches>
-          <template v-for="(league,index) in filterLeaguePregame">
-            <leaguenamepre :key="index+'league_pregame'">
+          <nomatches :class="{ 'hide_no_matches':filterLeaguePregame.length!=0} "></nomatches>
+          <template v-for="(league,index) in filterLeaguePregame ">
+            <leaguenamepre :key="index+ 'league_pregame' ">
               <span>{{league}}</span>
             </leaguenamepre>
-            <div class="match_container" :key="index+'macth_container_pregame'" :class="{'last':getLeaguePregame.length==index+1}">
-              <!-- <matchpregamecontainer type="pregame" v-for="(match,index) in getMatchPregame" :match="match" :key="index+'match_pre'" v-if="league==match.league&&(match.match_period!=''||match.match_period=='')">
-              </matchpregamecontainer> -->
+            <div class="match_container" :key="index+ 'macth_container_pregame' " :class="{ 'last':getLeaguePregame.length==index+1} ">
+              <matchpregamecontainer type="pregame " v-for="(match,index) in filterHomeAwayNamePre " :match="match " :key="index+ 'match_pre' " v-if="league==match.league&&(match.match_period!='' ||match.match_period=='' ) ">
+              </matchpregamecontainer>
             </div>
           </template>
           <headerpre type="expired">expired pre-game</headerpre>
-          <nomatches :class="{'hide_no_matches':filterLeaguePregameExp.length!=0}"></nomatches>
-          <template v-for="(league,index) in filterLeaguePregameExp">
-            <leaguenamepre :key="index+'league_pregame_exp'">
+          <nomatches :class="{ 'hide_no_matches':filterLeaguePregameExp.length!=0} "></nomatches>
+          <template v-for="(league,index) in filterLeaguePregameExp ">
+            <leaguenamepre :key="index+ 'league_pregame_exp' ">
               <span>{{league}}</span>
             </leaguenamepre>
-            <div class="match_container" :key="index+'macth_container_pregame_exp'" :class="{'last':getLeaguePregameExp.length==index+1}">
-              <!-- <matchpregamecontainer type="expired" v-for="(match,index) in getMatchPregame" :match="match" :key="index+'match_pre_exp'" v-if="league==match.league&&match.match_period=='FT'">
-              </matchpregamecontainer> -->
+            <div class="match_container " :key="index+ 'macth_container_pregame_exp' " :class="{ 'last':getLeaguePregameExp.length==index+1} ">
+              <matchpregamecontainer type="expired " v-for="(match,index) in filterHomeAwayNamePre " :match="match " :key="index+ 'match_pre_exp' " v-if="league==match.league&&match.match_period=='FT' ">
+              </matchpregamecontainer>
             </div>
           </template>
         </div>
-        <div class="footer">All Right Reserved. © 2018. Powered by In-Play</div>
+        <div class="footer ">All Right Reserved. © 2018. Powered by In-Play</div>
       </div>
     </div>
-    <div class="right-col" :class="{'hide-right-col':getIsHideDetail}">
+    <div class="right-col " :class="{ 'hide-right-col':getIsHideDetail} ">
       <detailprediction></detailprediction>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions, mapState } from "vuex";
-import _ from "lodash";
-import detailprediction from "./details/detailpredictions";
-import calendar from "./calendar";
-import headerpre from "./headerPre";
-import leaguenamepre from "./leagueNamePre";
-import matchprecontainer from "./inplay/matchInplayContainer";
-import nomatches from "./noMatches";
-import matchpregamecontainer from "./pregame/matchPregameContainer";
+import {mapGetters, mapActions, mapState} from 'vuex'
+import _ from 'lodash'
+import detailprediction from './details/detailpredictions'
+import calendar from './calendar'
+import headerpre from './headerPre'
+import leaguenamepre from './leagueNamePre'
+import matchprecontainer from './inplay/matchInplayContainer'
+import nomatches from './noMatches'
+import matchpregamecontainer from './pregame/matchPregameContainer'
 export default {
   computed: {
-    ...mapGetters("boxsearch", ["getchekedLeagueName"]),
-    ...mapGetters("detailpredictions", ["getIsHideDetail"]),
-    ...mapGetters("datapredictions", [
-      "getLeaguePrediction",
-      "getMatchInPlay",
-      "getMatchPregame",
-      "getLeagueInPlay",
-      "getLeagueInPlayExp",
-      "getLeaguePregame",
-      "getLeaguePregameExp"
+    ...mapGetters('boxsearch', ['getchekedLeagueName', 'getFilterTeamName']),
+    ...mapGetters('detailpredictions', ['getIsHideDetail']),
+    ...mapGetters('datapredictions', [
+      'getLeaguePrediction',
+      'getMatchInPlay',
+      'getMatchPregame',
+      'getLeagueInPlay',
+      'getLeagueInPlayExp',
+      'getLeaguePregame',
+      'getLeaguePregameExp',
     ]),
     filterLeagueInPlayExp() {
-      return this.checkLeagueInPlayExp();
+      return this.checkLeagueInPlayExp(this.filterHomeAwayName)
     },
     filterLeagueInPlay() {
-      return this.checkLeagueInPlay();
+      return this.checkLeagueInPlay(this.filterHomeAwayName)
     },
     filterLeaguePregame() {
-      return this.checkLeaguePregame();
+      return this.checkLeaguePregame(this.filterHomeAwayNamePre)
     },
     filterLeaguePregameExp() {
-      return this.checkLeaguePregameExp();
-    }
+      return this.checkLeaguePregameExp(this.filterHomeAwayNamePre)
+    },
+    filterHomeAwayName() {
+      if (this.getFilterTeamName == '') {
+        return this.getMatchInPlay
+      } else {
+        return this.getMatchInPlay.filter(el => {
+          return (
+            el.team_home.match(new RegExp(this.getFilterTeamName, 'gi')) ||
+            el.team_away.match(new RegExp(this.getFilterTeamName, 'gi'))
+          )
+        })
+      }
+    },
+    filterHomeAwayNamePre() {
+      if (this.getFilterTeamName == '') {
+        return this.getMatchPregame
+      } else {
+        return this.getMatchPregame.filter(el => {
+          return (
+            el.team_home.match(new RegExp(this.getFilterTeamName, 'gi')) ||
+            el.team_away.match(new RegExp(this.getFilterTeamName, 'gi'))
+          )
+        })
+      }
+    },
   },
   methods: {
-    ...mapActions("detailpredictions", ["hideDetail"]),
-    ...mapActions("datapredictions", [
-      "setLeague",
-      "setDataInplay",
-      "setDataPregame",
-      "setDataLeagueInplay",
-      "setDataLeagueInplayExp",
-      "setDataLeaguePregame",
-      "setDataLeaguePregameExp"
+    ...mapActions('detailpredictions', ['hideDetail']),
+    ...mapActions('datapredictions', [
+      'setLeague',
+      'setDataInplay',
+      'setDataPregame',
+      'setDataLeagueInplay',
+      'setDataLeagueInplayExp',
+      'setDataLeaguePregame',
+      'setDataLeaguePregameExp',
     ]),
-    leaguePregame(matches) {
-      var leaguePregame = _.filter(matches, function(match) {
-        return match.match_period != "FT";
-      });
-      this.setDataLeaguePregame(_.union(_.map(leaguePregame, "league")));
+    checkLeagueInPlay(data) {
+      var self = this
+      var league = _.filter(data, ({league, match_period}) => {
+        return _.includes(self.getchekedLeagueName, league) && match_period != 'FT'
+      })
+      return _.union(_.map(league, 'league'))
     },
-    leaguePregameExp(matches) {
-      var leaguePregameExp = _.filter(matches, function(match) {
-        return match.match_period == "FT";
-      });
-      this.setDataLeaguePregameExp(_.union(_.map(leaguePregameExp, "league")));
+    checkLeagueInPlayExp(data) {
+      var self = this
+      var league = _.filter(data, ({league, match_period}) => {
+        return _.includes(self.getchekedLeagueName, league) && match_period == 'FT'
+      })
+      return _.union(_.map(league, 'league'))
     },
-    leagueInPlay(matches) {
-      var leagueInPlay = _.filter(matches, function(match) {
-        return match.match_period != "FT";
-      });
-      this.setDataLeagueInplay(_.union(_.map(leagueInPlay, "league")));
+    checkLeaguePregame(data) {
+      var self = this
+      var league = _.filter(data, ({league, match_period}) => {
+        return _.includes(self.getchekedLeagueName, league) && match_period != 'FT'
+      })
+      return _.union(_.map(league, 'league'))
     },
-    leagueInPlayExp(matches) {
-      var leagueInPlayExp = _.filter(matches, function(match) {
-        return match.match_period == "FT";
-      });
-      this.setDataLeagueInplayExp(_.union(_.map(leagueInPlayExp, "league")));
+    checkLeaguePregameExp(data) {
+      var self = this
+      var league = _.filter(data, ({league, match_period}) => {
+        return _.includes(self.getchekedLeagueName, league) && match_period == 'FT'
+      })
+      return _.union(_.map(league, 'league'))
     },
-    checkLeagueInPlay() {
-      var self = this;
-      var league = _.filter(this.getLeagueInPlay, value => {
-        return _.includes(self.getchekedLeagueName, value);
-      });
-      return league;
-    },
-    checkLeagueInPlayExp() {
-      var self = this;
-      var league = _.filter(this.getLeagueInPlayExp, value => {
-        return _.includes(self.getchekedLeagueName, value);
-      });
-      return league;
-    },
-    checkLeaguePregame() {
-      var self = this;
-      var league = _.filter(this.getLeaguePregame, value => {
-        return _.includes(self.getchekedLeagueName, value);
-      });
-      return league;
-    },
-    checkLeaguePregameExp() {
-      var self = this;
-      var league = _.filter(this.getLeaguePregameExp, value => {
-        return _.includes(self.getchekedLeagueName, value);
-      });
-      return league;
-    }
   },
   components: {
     detailprediction,
@@ -167,29 +167,14 @@ export default {
     leaguenamepre,
     matchprecontainer,
     nomatches,
-    matchpregamecontainer
-  },
-  watch: {
-    getMatchPregame(newdata) {
-      this.leaguePregame(newdata);
-      this.leaguePregameExp(newdata);
-    },
-    getMatchInPlay(newdata) {
-      this.leagueInPlayExp(newdata);
-      this.leagueInPlay(newdata);
-    }
+    matchpregamecontainer,
   },
   mounted() {
-    var today = new Date();
-    var dateselected =
-      today.getFullYear() +
-      "-" +
-      (parseInt(today.getMonth()) + 1) +
-      "-" +
-      today.getDate();
-    this.$root.GetData.getInPlayPreGame(this, dateselected);
-  }
-};
+    var today = new Date()
+    var dateselected = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate()
+    this.$root.GetData.getInPlayPreGame(this, dateselected)
+  },
+}
 </script>
 <style lang="scss" scoped>
 .predictions {
@@ -216,12 +201,12 @@ export default {
   margin: 0 5px;
   padding: 0 3px;
   grid-template-areas:
-    "header header header header header header"
-    "main main main main main main"
-    "footer footer footer footer footer footer";
+    'header header header header header header'
+    'main main main main main main'
+    'footer footer footer footer footer footer';
 }
 .predictions-container::after {
-  content: "";
+  content: '';
   clear: both;
   display: table;
 }
@@ -240,7 +225,7 @@ export default {
   min-width: 200px;
   width: 100%;
   margin: auto;
-  div[class="match_container last"] {
+  div[class='match_container last'] {
     padding-bottom: 10px !important;
   }
 }
@@ -250,7 +235,7 @@ export default {
   max-width: 360px;
   min-width: 200px;
   width: 100%;
-  div[class="match_container last"] {
+  div[class='match_container last'] {
     padding-bottom: 10px !important;
   }
 }
@@ -296,8 +281,8 @@ export default {
   .predictions-container {
     display: grid;
     grid-template-areas:
-      "main main main right right right"
-      "footer footer footer footer footer footer";
+      'main main main right right right'
+      'footer footer footer footer footer footer';
     grid-column-gap: 5px;
   }
   .inplay {

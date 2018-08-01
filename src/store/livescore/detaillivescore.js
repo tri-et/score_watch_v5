@@ -1,19 +1,18 @@
-
 const state = {
-  isHideDetailLiveScore: true
+  isHideDetailLiveScore: true,
 }
 const getters = {
   getIsHideDetailLiveScore: state => {
     return state.isHideDetailLiveScore
-  }
+  },
 }
 const mutations = {
   setIsHideDetailLiveScore(state, value) {
     state.isHideDetailLiveScore = value
-  }
+  },
 }
 const actions = {
-  hideDetail({ commit }, value) {
+  hideDetail({commit}, value) {
     commit('setIsHideDetailLiveScore', value)
   },
 }
@@ -22,5 +21,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }

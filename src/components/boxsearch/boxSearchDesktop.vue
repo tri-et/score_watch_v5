@@ -9,7 +9,9 @@
           </span>
         </div>
       </li>
-      <li><input type="text" placeholder="Search here"></li>
+      <li>
+        <input type="text" placeholder="Search here"  @input="searchTeamName($event.target.value)">
+      </li>
     </ul>
   </div>
 </template>
@@ -18,10 +20,10 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   computed: {
     ...mapGetters("menuheader", ["getIsSearching", "getIsMobile"]),
-    ...mapGetters("boxsearch", ["getIsOpenLeagueDeskTop"])
+    ...mapGetters("boxsearch", ["getIsOpenLeagueDeskTop", "setFilterTeamName"])
   },
-  methods:{
-    ...mapActions("boxsearch", ["closeOpenLeagueDeskTop"])
+  methods: {
+    ...mapActions("boxsearch", ["closeOpenLeagueDeskTop", "searchTeamName"])
   }
 };
 </script>

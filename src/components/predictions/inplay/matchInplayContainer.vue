@@ -6,8 +6,8 @@
         <span>{{match.match_dt|filterDateTime}}</span>
       </template>
       <template slot="match_team">
-        <span>{{match.team_home}}</span>
-        <span>{{match.team_away}}</span>
+        <span v-html="this.$options.filters.highlight(match.team_home,this.getFilterTeamName)"></span>
+        <span v-html="this.$options.filters.highlight(match.team_away,this.getFilterTeamName)"></span>
       </template>
       <template slot="match_score">
         <span>{{match.score_home}}</span>
@@ -44,6 +44,7 @@ import pred_gold from "@/assets/imgs/pred_gold.svg";
 import lose_icon from "@/assets/imgs/lose_icon@1x.svg";
 import win_icon from "@/assets/imgs/win_icon@1x.svg";
 import draw_icon from "@/assets/imgs/draw_icon@1x.svg";
+import { mapGetters } from "vuex";
 export default {
   props: {
     match: [Object],
@@ -84,6 +85,9 @@ export default {
     inplayprediction,
     oddou,
     overunder
+  },
+  computed: {
+    ...mapGetters("boxsearch", ["getFilterTeamName"])
   },
   filters: {
     filterDateTime(value) {

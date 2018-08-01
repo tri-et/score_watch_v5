@@ -5,8 +5,8 @@
         <span>{{match.match_dt|filterDateTime}}</span>
       </template>
       <template slot="match_team">
-        <span>{{match.team_home}}</span>
-        <span>{{match.team_away}}</span>
+        <span v-html="this.$options.filters.highlight(match.team_home,this.getFilterTeamName)"></span>
+        <span v-html="this.$options.filters.highlight(match.team_away,this.getFilterTeamName)"></span>
       </template>
       <template slot="match_live">
         <span>{{match.match_dt|time_remaining}}</span>
@@ -40,6 +40,7 @@ import matchpregame from "./matchPregame";
 import pregameprediction from "./pregamePrediction";
 import overunderpregame from "./overUnderPregame";
 import pred_gold from "@/assets/imgs/pred_gold.svg";
+import { mapGetters } from "vuex";
 export default {
   props: {
     match: [Object],
@@ -51,14 +52,17 @@ export default {
       bgpre: {
         backgroundColor: "#C8E6F7",
         color: "#000",
-        imgUrl:pred_gold
+        imgUrl: pred_gold
       },
-      bgover:{
+      bgover: {
         backgroundColor: "#C8E6F7",
         color: "#000",
-        imgUrl:pred_gold
+        imgUrl: pred_gold
       }
     };
+  },
+  computed: {
+    ...mapGetters("boxsearch", ["getFilterTeamName"])
   },
   components: {
     matchpregame,

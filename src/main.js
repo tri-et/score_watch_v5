@@ -10,6 +10,13 @@ let getdata = new GetData();
 
 Vue.config.productionTip = false
 
+Vue.filter('highlight', function(words, query){
+  var iQuery = new RegExp(query, "ig");
+  return words.toString().replace(iQuery, function(matchedTxt){
+      return ('<span style="background-color: yellow">' + matchedTxt + '</span>');
+  });
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -1,7 +1,8 @@
 const state = {
     isOpenLeagueMobile: false,
     isOpenLeagueDeskTop: false,
-    chekedLeagueName: []
+    chekedLeagueName: [],
+    filterTeamName: ''
 }
 const getters = {
     getIsOpenLeagueMobile: state => {
@@ -12,6 +13,9 @@ const getters = {
     },
     getchekedLeagueName: state => {
         return state.chekedLeagueName
+    },
+    getFilterTeamName: state => {
+        return state.filterTeamName
     }
 }
 const mutations = {
@@ -23,6 +27,9 @@ const mutations = {
     },
     setchekedLeagueName(state, value) {
         state.chekedLeagueName = value
+    },
+    setFilterTeamName(state, value) {
+        state.filterTeamName = value
     }
 }
 const actions = {
@@ -34,6 +41,9 @@ const actions = {
     },
     checkLeague({ commit }, value) {
         commit('setchekedLeagueName', value)
+    },
+    searchTeamName({ commit }, value) {
+        commit('setFilterTeamName', value)
     }
 }
 export default {

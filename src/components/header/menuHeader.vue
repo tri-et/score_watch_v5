@@ -57,54 +57,48 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
-import boxsearchdesktop from "@/components/boxsearch/boxSearchDesktop";
-import boxsearchmobile from "@/components/boxsearch/boxSearchMobile";
-import boxleaguemobile from "@/components/boxsearch/boxLeagueMobile";
-import boxleaguedesktop from "@/components/boxsearch/boxLeagueDeskTop";
+import {mapGetters, mapActions} from 'vuex'
+import boxsearchdesktop from '@/components/boxsearch/boxSearchDesktop'
+import boxsearchmobile from '@/components/boxsearch/boxSearchMobile'
+import boxleaguemobile from '@/components/boxsearch/boxLeagueMobile'
+import boxleaguedesktop from '@/components/boxsearch/boxLeagueDeskTop'
 export default {
   components: {
     boxsearchdesktop,
     boxsearchmobile,
     boxleaguemobile,
-    boxleaguedesktop
+    boxleaguedesktop,
   },
   computed: {
-    ...mapGetters("menuheader", [
-      "getActiveMenu",
-      "getIsMobile",
-      "getIsSearching"
-    ])
+    ...mapGetters('menuheader', ['getActiveMenu', 'getIsMobile', 'getIsSearching']),
   },
   methods: {
-    ...mapActions("menuheader", ["menuSelect", "checkIsMobile", "clickSearch"]),
-    ...mapActions("boxsearch", [
-      "closeOpenLeagueMobile",
-      "closeOpenLeagueDeskTop"
-    ]),
-    ...mapActions("detailpredictions", ["hideDetail"]),
+    ...mapActions('menuheader', ['menuSelect', 'checkIsMobile', 'clickSearch']),
+    ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'closeOpenLeagueDeskTop', 'searchTeamName']),
+    ...mapActions('detailpredictions', ['hideDetail']),
     closeOenSearch() {
-      this.closeOpenLeagueDeskTop(false);
-      this.clickSearch(!this.getIsSearching);
-    }
+      this.searchTeamName('')
+      this.closeOpenLeagueDeskTop(false)
+      this.clickSearch(!this.getIsSearching)
+    },
   },
   mounted() {
-    var seft = this;
-    this.$root.$on("browserResize", function(data) {
+    var seft = this
+    this.$root.$on('browserResize', function(data) {
       if (data >= 672) {
-        seft.hideDetail(false);
+        seft.hideDetail(false)
       }
 
       if (data >= 843) {
-        seft.checkIsMobile(false);
-        seft.closeOpenLeagueMobile(false);
+        seft.checkIsMobile(false)
+        seft.closeOpenLeagueMobile(false)
       } else {
-        seft.checkIsMobile(true);
-        seft.closeOpenLeagueDeskTop(false);
+        seft.checkIsMobile(true)
+        seft.closeOpenLeagueDeskTop(false)
       }
-    });
-  }
-};
+    })
+  },
+}
 </script>
 <style lang="scss" scoped>
 .menu-header {

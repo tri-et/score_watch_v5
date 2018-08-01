@@ -5,6 +5,7 @@ import boxsearch from './boxSearch'
 import detailpredictions from './predictions/detail'
 import detaillivescore from './livescore/detaillivescore'
 import calendarpre from './predictions/calendar'
+import datapredictions from './predictions/datapredictions'
 import calendarlive from './livescore/calendarLiveScore'
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -14,7 +15,8 @@ export default new Vuex.Store({
     detailpredictions,
     detaillivescore,
     calendarpre,
-    calendarlive
+    calendarlive,
+    datapredictions
   },
   state: {},
   getters: {},

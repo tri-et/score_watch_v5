@@ -12,7 +12,7 @@
               <span>{{league}}</span>
             </leaguenamepre>
             <div class="match_container" :key="index+'macth_container_inplay'" :class="{'last':getLeagueInPlay.length==index+1}">
-              <matchprecontainer type="inplay" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay'" v-if="league==match.league && match.match_period!='FT'">
+              <matchprecontainer type="inplay" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay'" v-if="league==match.league && match.match_period!='FT' && !match.isExpired">
               </matchprecontainer>
             </div>
           </template>
@@ -23,7 +23,7 @@
               <span>{{league}}</span>
             </leaguenamepre>
             <div class="match_container" :key="index+'macth_container_inplay_exp'" :class="{'last':getLeagueInPlayExp.length==index+1}">
-              <matchprecontainer type="expired" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay_exp'" v-if="league==match.league && match.match_period=='FT'">
+              <matchprecontainer type="expired" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay_exp'" v-if="league==match.league && (match.match_period=='FT' || match.isExpired)">
               </matchprecontainer>
             </div>
           </template>
@@ -133,15 +133,15 @@ export default {
     ]),
     checkLeagueInPlay(data) {
       var self = this
-      var league = _.filter(data, ({league, match_period}) => {
-        return _.includes(self.getchekedLeagueName, league) && match_period != 'FT'
+      var league = _.filter(data, ({league, match_period, isExpired}) => {
+        return _.includes(self.getchekedLeagueName, league) && match_period != 'FT' && !isExpired
       })
       return _.union(_.map(league, 'league'))
     },
     checkLeagueInPlayExp(data) {
       var self = this
-      var league = _.filter(data, ({league, match_period}) => {
-        return _.includes(self.getchekedLeagueName, league) && match_period == 'FT'
+      var league = _.filter(data, ({league, match_period, isExpired}) => {
+        return _.includes(self.getchekedLeagueName, league) && (match_period == 'FT' || isExpired)
       })
       return _.union(_.map(league, 'league'))
     },

@@ -6,20 +6,28 @@
     <div class="match_team">
       <slot name="match_team" />
     </div>
-    <div class="match_live" :class="{'hide_score':type=='expired'}">
+    <div class="match_live" :class="{'hide_score':!active}">
       <slot name="match_live" />
     </div>
-    <div class="match_score" :class="{'hide_score':type=='pregame'}">
+    <div class="match_score" :class="{'hide_score':active}">
       <slot name="match_score" />
     </div>
   </div>
 </template>
 <script>
 export default {
-  props:{
-    type:[String]
-  }
-};
+  props: {
+    type: [String],
+  },
+  data() {
+    return {
+      active: true,
+    }
+  },
+  create() {
+    this.active = this.type === 'pregame' ? false : true
+  },
+}
 </script>
 <style lang="scss" scoped>
 .match_pre {
@@ -48,12 +56,18 @@ export default {
   padding: 0 8px;
   text-align: center;
 }
-.match_live {
-  color: #000;
-  opacity: 0.34;
-}
-.hide_score{
-  display: none!important;
+// .match_live {
+//   span:first-child {
+//     color: #69ae72;
+//     font-weight: 700;
+//   }
+//   span:nth-child(2) {
+//     color: #000;
+//     opacity: 0.34;
+//   }
+// }
+.hide_score {
+  display: none !important;
 }
 </style>
 

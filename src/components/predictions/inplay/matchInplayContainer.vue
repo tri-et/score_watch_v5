@@ -1,5 +1,5 @@
 <template>
-  <div class="match_pre_container">
+  <div class="match_pre_container" @click="matchSelected()" :style="match.idmatch==getDataDetail.idmatch?active:''">
     <matchpre>
       <template slot="match_time_ft">
         <span>FT</span>
@@ -14,7 +14,7 @@
         <span>{{match.score_away}}</span>
       </template>
     </matchpre>
-    <inplayprediction :marquee="marquee" :bg="bginplay" :item="match.detail">
+    <inplayprediction :marquee="marquee" :bg="bginplay" :item="match.detail" :type="type">
       <template slot="team_pick">
         <span :class="{'marquee':marquee}">{{match.pick_hdp=="H"?match.team_home.trim():match.team_away.trim()}}</span>
       </template>
@@ -24,7 +24,7 @@
         </oddou>
       </template>
     </inplayprediction>
-    <overunder :bg="bgover">
+    <overunder :bg="bgover" :type="type" :item="match.detail">
       <template slot="over_under_pick">
         <span>{{match.detail.pick_ou=="O"?"over":"under"}}</span>
       </template>
@@ -44,7 +44,7 @@ import pred_gold from '@/assets/imgs/pred_gold.svg'
 import lose_icon from '@/assets/imgs/lose_icon@1x.svg'
 import win_icon from '@/assets/imgs/win_icon@1x.svg'
 import draw_icon from '@/assets/imgs/draw_icon@1x.svg'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   props: {
     match: [Object],
@@ -78,6 +78,9 @@ export default {
         backgroundColor: '#F0F0F0',
         color: 'rgba(51,51,51,.45)',
       },
+      active: {
+        border: '',
+      },
     }
   },
   components: {
@@ -88,6 +91,7 @@ export default {
   },
   computed: {
     ...mapGetters('boxsearch', ['getFilterTeamName']),
+    ...mapGetters('detailpredictions', ['getDataDetail']),
   },
   filters: {
     filterDateTime(value) {
@@ -96,6 +100,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions('detailpredictions', ['hideDetail', 'setDataDetail']),
     setMarquee() {
       var inner = this.$el.querySelector('.team_pick').offsetWidth
       var outter = this.$el.querySelector('.team_pick span').offsetWidth - 1
@@ -157,6 +162,15 @@ export default {
       } else {
       }
     },
+    matchSelected() {
+      this.hideDetail(false)
+      this.setDataDetail({data: this.match, type: this.type})
+      if (this.type == 'expired') {
+        this.active.border = '1px solid #767676'
+      } else {
+        this.active.border = '1px solid #ff7c7c'
+      }
+    },
   },
   created() {
     this.setbgInPlay()
@@ -177,6 +191,7 @@ export default {
   margin-bottom: 8px;
   display: inline-block;
   width: 100%;
+  cursor: pointer;
   &:last-of-type {
     margin-bottom: 0px;
   }

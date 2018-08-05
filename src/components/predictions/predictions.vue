@@ -11,7 +11,7 @@
             <leaguenamepre :key="index+'league_inplay'">
               <span>{{league}}</span>
             </leaguenamepre>
-            <div class="match_container" :key="index+'macth_container_inplay'" :class="{'last':getLeagueInPlay.length==index+1}">
+            <div class="match_container" :key="index+'macth_container_inplay'" :class="{'last':filterLeagueInPlay.length==index+1}">
               <matchprecontainer type="inplay" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay'" v-if="league==match.league && match.match_period!='FT' && !match.isExpired">
               </matchprecontainer>
             </div>
@@ -22,7 +22,7 @@
             <leaguenamepre :key="index+'league_inplay_exp'">
               <span>{{league}}</span>
             </leaguenamepre>
-            <div class="match_container" :key="index+'macth_container_inplay_exp'" :class="{'last':getLeagueInPlayExp.length==index+1}">
+            <div class="match_container" :key="index+'macth_container_inplay_exp'" :class="{'last':filterLeagueInPlayExp.length==index+1}">
               <matchprecontainer type="expired" v-for="(match,index) in filterHomeAwayName" :match="match" :key="index+'match_inplay_exp'" v-if="league==match.league && (match.match_period=='FT' || match.isExpired)">
               </matchprecontainer>
             </div>
@@ -35,7 +35,7 @@
             <leaguenamepre :key="index+ 'league_pregame' ">
               <span>{{league}}</span>
             </leaguenamepre>
-            <div class="match_container" :key="index+ 'macth_container_pregame' " :class="{ 'last':getLeaguePregame.length==index+1} ">
+            <div class="match_container" :key="index+ 'macth_container_pregame' " :class="{ 'last':filterLeaguePregame.length==index+1} ">
               <matchpregamecontainer type="pregame " v-for="(match,index) in filterHomeAwayNamePre " :match="match " :key="index+ 'match_pre' " v-if="league==match.league&&(match.match_period!='' ||match.match_period=='' ) ">
               </matchpregamecontainer>
             </div>
@@ -46,7 +46,7 @@
             <leaguenamepre :key="index+ 'league_pregame_exp' ">
               <span>{{league}}</span>
             </leaguenamepre>
-            <div class="match_container " :key="index+ 'macth_container_pregame_exp' " :class="{ 'last':getLeaguePregameExp.length==index+1} ">
+            <div class="match_container " :key="index+ 'macth_container_pregame_exp' " :class="{ 'last':filterLeaguePregameExp.length==index+1} ">
               <matchpregamecontainer type="expired " v-for="(match,index) in filterHomeAwayNamePre " :match="match " :key="index+ 'match_pre_exp' " v-if="league==match.league&&match.match_period=='FT' ">
               </matchpregamecontainer>
             </div>

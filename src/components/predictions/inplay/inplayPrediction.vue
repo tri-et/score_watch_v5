@@ -9,8 +9,11 @@
     <div class="odd_score">
       <slot name="odd_score" />
     </div>
-    <div class="time_expired">
+    <div class="countdown">
       <countdown :item="item"></countdown>
+    </div>
+    <div v-if="type=='expired'" class="time_expired" >
+      <span>{{`Min ${item.minutes}\' - ${calculatorExpired(item.minutes)}\'`}}</span>
     </div>
   </div>
 </template>
@@ -20,10 +23,22 @@ export default {
   props: {
     marquee: [Boolean],
     bg:[Object],
-    item:[Object]
+    item:[Object],
+    type:[String]
   },
   components:{
     countdown
+  },
+  methods:{
+    calculatorExpired(minutes) {
+      var time = parseInt(minutes);
+      if (time < 70) {
+        time = time + 10;
+      } else {
+        time = time + 3;
+      }
+      return time;
+    }
   }
 };
 </script>
@@ -65,7 +80,7 @@ export default {
   display: flex;
   align-content: center;
 }
-.time_expired{
+.countdown{
   font-weight: 700;
 }
 </style>

@@ -5,7 +5,7 @@
     </div>
     <div class="date-content">
       <ul>
-        <li v-for="(item,index) in days" :key="index" :class="{'active-calendar-pre':getActiveCalendarLive==index}" @click="selectDate(index,$event)">
+        <li v-for="(item,index) in days" :key="index" :class="{'active-calendar-pre':getActiveCalendarPre==index}" @click="selectDate(index,$event)">
           <div>
             <span>{{item|date}}</span>
             <span>{{item|day}}</span>
@@ -28,7 +28,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("calendarlive", ["getActiveCalendarLive"])
+    ...mapGetters("calendarpre", ["getActiveCalendarPre"])
   },
   filters: {
     data() {
@@ -67,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("calendarlive", ["activeCalendarLive"]),
+    ...mapActions("calendarpre", ["activeCalendarPre"]),
     renderDays() {
       var dateOfmonth = [];
       for (var i = 16; i--; ) {
@@ -96,7 +96,7 @@ export default {
       inner.scrollLeft = outer - (inner.offsetWidth / 2 + 1.5);
     },
     selectDate(index, event) {
-      this.activeCalendarLive(index);
+      this.activeCalendarPre(index);
       this.setDateCenter(event);
     },
     setDateCenterFirsLoad() {

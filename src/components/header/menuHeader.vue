@@ -75,7 +75,7 @@ export default {
   methods: {
     ...mapActions('menuheader', ['menuSelect', 'checkIsMobile', 'clickSearch']),
     ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'closeOpenLeagueDeskTop', 'searchTeamName']),
-    ...mapActions('detailpredictions', ['hideDetail']),
+    ...mapActions('detailpredictions', ['hideDetail', 'hideHeader']),
     closeOenSearch() {
       this.searchTeamName('')
       this.closeOpenLeagueDeskTop(false)
@@ -83,18 +83,21 @@ export default {
     },
   },
   mounted() {
-    var seft = this
+    var self = this
     this.$root.$on('browserResize', function(data) {
       if (data >= 672) {
-        seft.hideDetail(false)
+        self.hideDetail(false)
+        self.hideHeader(true)
+      } else {
+        self.hideHeader(false)
       }
 
       if (data >= 843) {
-        seft.checkIsMobile(false)
-        seft.closeOpenLeagueMobile(false)
+        self.checkIsMobile(false)
+        self.closeOpenLeagueMobile(false)
       } else {
-        seft.checkIsMobile(true)
-        seft.closeOpenLeagueDeskTop(false)
+        self.checkIsMobile(true)
+        self.closeOpenLeagueDeskTop(false)
       }
     })
   },

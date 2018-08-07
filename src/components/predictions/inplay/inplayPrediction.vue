@@ -3,14 +3,17 @@
     <div class="match_time">
       <img :src="bg.imgUrl" alt="" width="24" height="24">
     </div>
-    <div class="team_pick" :style="{'width':marquee?'92px':''}">
+    <div class="team_pick" :style="{'width':marquee?'87px':''}">
       <slot name="team_pick" />
     </div>
     <div class="odd_score">
       <slot name="odd_score" />
     </div>
-    <div class="time_expired">
+    <div class="countdown">
       <countdown :item="item"></countdown>
+    </div>
+    <div v-if="type=='expired'" class="time_expired" >
+      <span>{{`Min ${item.minutes}\' - ${calculatorExpired(item.minutes)}\'`}}</span>
     </div>
   </div>
 </template>
@@ -20,10 +23,22 @@ export default {
   props: {
     marquee: [Boolean],
     bg:[Object],
-    item:[Object]
+    item:[Object],
+    type:[String]
   },
   components:{
     countdown
+  },
+  methods:{
+    calculatorExpired(minutes) {
+      var time = parseInt(minutes);
+      if (time < 70) {
+        time = time + 10;
+      } else {
+        time = time + 3;
+      }
+      return time;
+    }
   }
 };
 </script>
@@ -43,7 +58,7 @@ export default {
     padding: 4px 8px 4px 0px;
   }
   div:nth-of-type(2) {
-    max-width: 92px;
+    max-width: 85px;
     white-space: nowrap;
     overflow: hidden;
     font-weight: 700;
@@ -65,7 +80,7 @@ export default {
   display: flex;
   align-content: center;
 }
-.time_expired{
+.countdown{
   font-weight: 700;
 }
 </style>

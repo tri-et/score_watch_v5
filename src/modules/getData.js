@@ -4,7 +4,7 @@ class GetData {
   constructor() {
     this.datePrediction = ''
     this.url = 'http://localhost:8000/score_watch_v5'
-    // this.url=""
+    // this.url = ''
   }
   getInPlay() {
     return Axios.get(`${this.url}/index.php/api/get_running/${this.datePrediction}/${new Date().getHours()}`, {

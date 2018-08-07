@@ -24,7 +24,7 @@ export default {
   background-color: #69ae72;
   display: flex !important;
   align-items: center;
-  padding: 2px 4px;
+  padding: 2px 8px;
   font-size: 14px;
   color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);

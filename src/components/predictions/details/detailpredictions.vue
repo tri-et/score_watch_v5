@@ -217,7 +217,7 @@ $circle-diameter: 64px;
 .timePregame {
   color: #fff;
   div:first-child {
-    background: #5bb6e7 !important;
+    background-color: #5bb6e7 !important;
   }
   div:last-child {
     background: #c8e6f7 !important;
@@ -225,7 +225,7 @@ $circle-diameter: 64px;
 }
 .timeExpired {
   div:first-child {
-    background: #767676 !important;
+    background-color: #767676 !important;
   }
   div:last-child {
     background: #f0f0f0 !important;

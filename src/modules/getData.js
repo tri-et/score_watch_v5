@@ -33,9 +33,9 @@ class GetData {
         })
         app.setDataInplay(dataInplay)
         app.setDataPregame(dataPregame)
-        setTimeout(() => {
-          self.getInPlayPreGame(app, self.datePrediction)
-        }, 3000)
+        // setTimeout(() => {
+        //   self.getInPlayPreGame(app, self.datePrediction)
+        // }, 3000)
       })
     )
   }

@@ -7,7 +7,10 @@
       <span>{{getDataDetail.pick_hdp=="H"?getDataDetail.team_home:getDataDetail.team_away}}</span>
     </div>
     <div>
-      <span>&nbsp;{{`[${getDataDetail.score_home}:${getDataDetail.score_away}] -1.75 @ 0.87`}}</span>
+      <span>&nbsp;{{`[${getDataDetail.score_home}:${getDataDetail.score_away}] ${getDataDetail.detail==undefined?getDataDetail.sys_hdp:getDataDetail.detail.sys_hdp} @`}}</span>
+      <span>&nbsp;{{getDataDetail.pick_hdp=='H'?(getDataDetail.detail==undefined?
+        getDataDetail.sys_odds_home:getDataDetail.detail.sys_odds_home):(getDataDetail.detail==undefined?
+        getDataDetail.sys_odds_away:getDataDetail.detail.sys_odds_away)}}</span>
     </div>
   </div>
 </template>

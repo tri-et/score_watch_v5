@@ -214,7 +214,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   height: 100%;
   width: 100%;
-  transition: width 1s;
+  transition: width .5s;
 }
 .hide-right-col {
   width: 0;

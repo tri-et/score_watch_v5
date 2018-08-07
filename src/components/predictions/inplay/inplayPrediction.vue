@@ -3,7 +3,7 @@
     <div class="match_time">
       <img :src="bg.imgUrl" alt="" width="24" height="24">
     </div>
-    <div class="team_pick" :style="{'width':marquee?'92px':''}">
+    <div class="team_pick" :style="{'width':marquee?'87px':''}">
       <slot name="team_pick" />
     </div>
     <div class="odd_score">
@@ -58,7 +58,7 @@ export default {
     padding: 4px 8px 4px 0px;
   }
   div:nth-of-type(2) {
-    max-width: 92px;
+    max-width: 85px;
     white-space: nowrap;
     overflow: hidden;
     font-weight: 700;

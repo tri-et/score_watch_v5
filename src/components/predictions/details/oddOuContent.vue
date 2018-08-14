@@ -62,10 +62,10 @@ export default {}
     width: 20%;
     font-weight: bold;
   }
-  div:nth-child(2){
-    opacity: 0.34;;
+  div:nth-child(2) {
+    opacity: 0.34;
   }
-  div:not(:first-child){
+  div:not(:first-child) {
     font-size: 16px;
     flex: 1;
     text-align: center;

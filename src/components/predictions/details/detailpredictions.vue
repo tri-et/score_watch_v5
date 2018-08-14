@@ -1,6 +1,6 @@
 <template>
-  <div class="detail-predictions" @click="hideDetail(true)" :class="{'hide-detail':getIsHideDetail}">
-    <div class="header-detail" :class="{'hide-header':getIsHideHeader}">
+  <div class="detail-predictions" :class="{'hide-detail':getIsHideDetail,'max-height-detail':getIsMobile && getIsSearching && getIsHideHeader}">
+    <div class="header-detail" @click="hideDetail(true)" :class="{'hide-header':getIsHideHeader}">
       <i class="material-icons">keyboard_backspace</i>
       <span>&nbsp;Back</span>
     </div>
@@ -71,10 +71,10 @@
         <template slot="sbo-1">
           <span>{{getDataDetail.sbo_hdp}}</span>
         </template>
-         <template slot="sbo-2">
+        <template slot="sbo-2">
           <span>{{getDataDetail.sbo_odds_home}}</span>
         </template>
-         <template slot="sbo-3">
+        <template slot="sbo-3">
           <span>{{getDataDetail.sbo_odds_away}}</span>
         </template>
         <template slot="ibc-1">
@@ -102,7 +102,7 @@
         </template>
       </oddouheader>
       <oddoucontent>
-         <template slot="m8-1">
+        <template slot="m8-1">
           <span>{{getDataDetail.sys_ou}}</span>
         </template>
         <template slot="m8-2">
@@ -114,10 +114,10 @@
         <template slot="sbo-1">
           <span>{{getDataDetail.sbo_ou}}</span>
         </template>
-         <template slot="sbo-2">
+        <template slot="sbo-2">
           <span>{{getDataDetail.sbo_odds_over}}</span>
         </template>
-         <template slot="sbo-3">
+        <template slot="sbo-3">
           <span>{{getDataDetail.sbo_odds_under}}</span>
         </template>
         <template slot="ibc-1">
@@ -183,6 +183,7 @@ export default {
   },
   computed: {
     ...mapGetters('detailpredictions', ['getIsHideDetail', 'getIsHideHeader', 'getDataDetail', 'getCurrentType']),
+    ...mapGetters('menuheader', ['getIsSearching', 'getIsMobile']),
   },
   methods: {
     ...mapActions('detailpredictions', ['hideDetail']),
@@ -206,6 +207,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 $circle-diameter: 64px;
+.max-height-detail {
+  max-height: calc(100% - 65px) !important;
+}
 .timeInplay {
   div:first-child {
     background-color: #ff7c7c;
@@ -261,7 +265,7 @@ $circle-diameter: 64px;
   height: 100%;
   float: right;
   visibility: visible;
-  transition: width 1s, visibility 1s;
+  transition: width 0.2s, visibility 0.2s;
   position: relative;
 }
 .hide-detail {

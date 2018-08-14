@@ -1,12 +1,16 @@
 <template>
     <div class="league-name-live">
-        <div class="icon_league_live"></div>
-        <div><span>MEX MFW</span></div>
-        <div><span>MEXICO LIGA MX FEMENIL</span></div>
+        <div class="icon_league_live" :style="{'background-color':color}"></div>
+        <div :style="{'color':color}"><slot name="shortnamelive"/></div>
+        <div><slot name="leaguenamelive"/></div>
     </div>
 </template>
 <script>
-export default {};
+export default {
+  props:{
+    color:[String]
+  }
+};
 </script>
 <style lang="scss" scoped>
 .league-name-live {
@@ -26,7 +30,6 @@ export default {};
   height: 24px;
   width: 8px;
   border-radius: 4px;
-  background-color: #5700af;
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.34);
   margin: 0 8px;
 }

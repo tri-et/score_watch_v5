@@ -1,15 +1,16 @@
 <template>
   <div class="match_pre">
     <div class="match_time_ft">
+      <span v-if="type.trim()=='expired'">FT</span>
       <slot name="match_time_ft" />
     </div>
     <div class="match_team">
       <slot name="match_team" />
     </div>
-    <div class="match_live" :class="{'hide_score':!active}">
+    <div class="match_live" :class="{'hide_score':type.trim()=='expired'}">
       <slot name="match_live" />
     </div>
-    <div class="match_score" :class="{'hide_score':active}">
+    <div class="match_score" :class="{'hide_score':type.trim()=='pregame'}">
       <slot name="match_score" />
     </div>
   </div>
@@ -18,14 +19,6 @@
 export default {
   props: {
     type: [String],
-  },
-  data() {
-    return {
-      active: true,
-    }
-  },
-  create() {
-    this.active = this.type === 'pregame' ? false : true
   },
 }
 </script>

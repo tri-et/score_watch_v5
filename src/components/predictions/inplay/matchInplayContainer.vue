@@ -159,7 +159,6 @@ export default {
             }
             break
         }
-      } else {
       }
     },
     matchSelected() {
@@ -175,6 +174,11 @@ export default {
   created() {
     this.setbgInPlay()
     this.setgbOver()
+    if (this.type == 'expired') {
+      this.active.border = '1px solid #767676'
+    } else {
+      this.active.border = '1px solid #ff7c7c'
+    }
   },
   mounted() {
     this.setMarquee()

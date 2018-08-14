@@ -5,15 +5,29 @@
       <calendarlivescore></calendarlivescore>
       <div class="livescores-container">
         <div class="inplay">
-         <leaguelivescore></leaguelivescore>
+          <template v-for="(item,index) in filterLeftLeague">
+            <leaguelivescore :key="index+'leftCol'" :color="item.colorName">
+              <span slot="shortnamelive">{{item.shortName}}</span>
+              <span slot="leaguenamelive">{{item.leagueName}}</span>
+            </leaguelivescore>
+            <matchlivescore v-for="(match,index) in getMatchesColLeft" :match="match" v-if="match[5]==item.leagueName" :key="index+match[0]">
+            </matchlivescore>
+          </template>
         </div>
         <div class="pregame">
-          <leaguelivescore></leaguelivescore>
+          <template v-for="(item,index) in filterRightLeague">
+            <leaguelivescore :key="index+'rightCol'" :color="item.colorName">
+              <span slot="shortnamelive">{{item.shortName}}</span>
+              <span slot="leaguenamelive">{{item.leagueName}}</span>
+            </leaguelivescore>
+            <matchlivescore v-for="(match,index) in getMatchesColRight" :match="match" v-if="match[5]==item.leagueName" :key="index+match[0]">
+            </matchlivescore>
+          </template>
         </div>
         <div class="footer">All Right Reserved. © 2018. Powered by In-Play</div>
       </div>
     </div>
-    <div class="right-col">
+    <div class="right-col" :class="{'hide-right-col':getIsHideDetail}">
       <detaillivescore></detaillivescore>
     </div>
   </div>
@@ -24,11 +38,47 @@ import _ from 'lodash'
 import detaillivescore from './details/detaillivescore'
 import calendarlivescore from './calendarLivescore'
 import leaguelivescore from './leagueNameLive'
+import matchlivescore from './matchLiveScore'
 export default {
   components: {
     calendarlivescore,
     detaillivescore,
     leaguelivescore,
+    matchlivescore,
+  },
+  computed: {
+    ...mapGetters('datalivescore', ['getLeagueLiveScore', 'getMatchesColRight', 'getMatchesColLeft']),
+    ...mapGetters('detailpredictions', ['getIsHideDetail']),
+    filterLeftLeague() {
+      return _.unionBy(
+        _.map(this.getMatchesColLeft, x => {
+          return Object.assign({
+            leagueName: x[5],
+            shortName: x[6],
+            colorName: x[7],
+          })
+        }),
+        'leagueName'
+      )
+    },
+    filterRightLeague() {
+      return _.unionBy(
+        _.map(this.getMatchesColRight, x => {
+          return Object.assign({
+            leagueName: x[5],
+            shortName: x[6],
+            colorName: x[7],
+          })
+        }),
+        'leagueName'
+      )
+    },
+  },
+  methods: {
+    ...mapActions('datalivescore', ['setLeagueLiveSocre', 'setDataLiveScore']),
+  },
+  mounted() {
+    this.$root.GetData.getLiveScore(this)
   },
 }
 </script>
@@ -80,6 +130,8 @@ export default {
   max-width: 360px;
   min-width: 200px;
   width: 100%;
+  background-color: #f0f0f0;
+  height: fit-content;
   margin: auto;
   div[class='match_container last'] {
     padding-bottom: 10px !important;
@@ -91,6 +143,8 @@ export default {
   max-width: 360px;
   min-width: 200px;
   width: 100%;
+  height: fit-content;
+  background-color: #f0f0f0;
   div[class='match_container last'] {
     padding-bottom: 10px !important;
   }
@@ -99,6 +153,7 @@ export default {
   background-color: #f0f0f0;
   padding: 0 8px 8px 8px;
 }
+
 .footer {
   grid-area: footer;
   background-color: #333;

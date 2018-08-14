@@ -50,7 +50,7 @@ export default {
   padding: 2px 8px;
   font-size: 14px;
   color: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
   img{
     margin-bottom: -5px;
   }
@@ -58,7 +58,7 @@ export default {
     padding: 4px 8px 4px 0px;
   }
   div:nth-of-type(2) {
-    max-width: 85px;
+    max-width: 60px;
     white-space: nowrap;
     overflow: hidden;
     font-weight: 700;

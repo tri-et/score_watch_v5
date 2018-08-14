@@ -5,38 +5,60 @@
       <div>
         <i class="material-icons">replay</i>
       </div>
-      <div @click="closeOpenLeagueMobile(false)">
+      <div @click="closeLeagueFilter()">
         <i class="material-icons">clear</i>
       </div>
     </div>
     <div class="inPut-search">
-      <input type="text" placeholder="Search league">
+      <input type="text" placeholder="Search league" v-model="filterLeagueTxt">
     </div>
     <div class="search-result">
       <ul>
-        <li>
-          <input type="checkbox" name="" id="test1">
-          <label for="test1">test</label>
-        </li>
-        <li>
-          <input type="checkbox" name="" id="test2">
-          <label for="test2">test 2</label>
+        <li v-for="(league,index) in filterleague" :key="index+'leaguemobi'">
+          <input type="checkbox" :value="league" :id="league" v-model="checkedLeagueMobi" @change="updateCheckall()">
+          <label :for="league">{{league}}</label>
         </li>
       </ul>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+import {mapGetters, mapActions} from 'vuex'
 export default {
+  data() {
+    return {
+      filterLeagueTxt: '',
+      checkedLeagueMobi: [],
+    }
+  },
   computed: {
-    ...mapGetters("boxsearch", ["getIsOpenLeagueMobile"]),
-    ...mapGetters("menuheader", ["getIsMobile"])
+    ...mapGetters('boxsearch', ['getIsOpenLeagueMobile']),
+    ...mapGetters('menuheader', ['getIsMobile']),
+    ...mapGetters('datapredictions', ['getLeaguePrediction']),
+    filterleague() {
+      if (this.getLeaguePrediction != null) {
+        return this.getLeaguePrediction.filter(el => {
+          return el.match(new RegExp(this.filterLeagueTxt, 'gi'))
+        })
+      }
+    },
   },
   methods: {
-    ...mapActions("boxsearch", ["closeOpenLeagueMobile"])
-  }
-};
+    ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'checkLeague']),
+    updateCheckall() {
+      this.checkLeague(this.checkedLeagueMobi.length == 0 ? this.getLeaguePrediction : this.checkedLeagueMobi)
+    },
+    closeLeagueFilter() {
+      this.closeOpenLeagueMobile(false)
+    },
+  },
+  watch: {
+    getIsMobile(newData, oldData) {
+      this.checkLeague(this.getLeaguePrediction)
+      this.checkedLeagueMobi = []
+    },
+  },
+}
 </script>
 <style lang="scss" scoped>
 .box-league-mobile {
@@ -104,8 +126,13 @@ export default {
       color: #fff;
       display: flex;
       padding-left: 10px;
+      cursor: pointer;
       input {
         margin-right: 5px;
+        cursor: pointer;
+      }
+      label {
+        cursor: pointer;
       }
     }
   }

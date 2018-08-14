@@ -74,7 +74,12 @@ export default {
   },
   methods: {
     ...mapActions('menuheader', ['menuSelect', 'checkIsMobile', 'clickSearch']),
-    ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'closeOpenLeagueDeskTop', 'searchTeamName']),
+    ...mapActions('boxsearch', [
+      'closeOpenLeagueMobile',
+      'closeOpenLeagueDeskTop',
+      'searchTeamName',
+      'getchekedLeagueName',
+    ]),
     ...mapActions('detailpredictions', ['hideDetail', 'hideHeader']),
     closeOenSearch() {
       this.searchTeamName('')
@@ -91,7 +96,6 @@ export default {
       } else {
         self.hideHeader(false)
       }
-
       if (data >= 843) {
         self.checkIsMobile(false)
         self.closeOpenLeagueMobile(false)

@@ -16,8 +16,41 @@ class GetData {
       timeout: 100000,
     })
   }
+  getDataInplay(app) {
+    var self = this
+    Axios.get(`${this.url}/index.php/api/get_running/${this.datePrediction}/${new Date().getHours()}`, {
+      timeout: 100000,
+    }).then(function({data}) {
+      var dataInplay = data
+      dataInplay.map(match => {
+        return Object.assign(match, {
+          isExpired: self.isExpired(match.detail),
+        })
+      })
+      app.setDataInplay(dataInplay)
+      setTimeout(() => {
+        self.getDataInplay(app)
+      }, 3000)
+    })
+  }
+  getDataPregame(app) {
+    var self = this
+    Axios.get(`${this.url}/index.php/api/get_pregame/${this.datePrediction}/${new Date().getHours()}`, {
+      timeout: 100000,
+    }).then(function({data}) {
+      app.setDataPregame(data)
+      setTimeout(() => {
+        self.getDataPregame(app)
+      }, 10000)
+    })
+  }
+
   getInPlayPreGame(app, datepre) {
     var self = this
+    clearTimeout(self.timeInPlay)
+    clearTimeout(self.timePregame)
+    self.timeInPlay = null
+    self.timePregame = null
     this.datePrediction = datepre
     Axios.all([this.getInPlay(), this.getPreGame()]).then(
       Axios.spread((inplay, pregame) => {
@@ -33,10 +66,62 @@ class GetData {
         })
         app.setDataInplay(dataInplay)
         app.setDataPregame(dataPregame)
-        // setTimeout(() => {
-        //   self.getInPlayPreGame(app, self.datePrediction)
-        // }, 3000)
+        self.timeInPlay = setTimeout(() => {
+          self.getDataInplay(app)
+        }, 3000)
+        self.timePregame = setTimeout(() => {
+          self.getDataPregame(app)
+        }, 10000)
       })
+    )
+  }
+  getTimeLineData() {
+    return Axios.get(
+      'http://www.hasilskor.com/API/JSON.aspx?callback=callbackJSON&sport=soccerDA&s=26PDpiffaaBbGrBdfgnrK2pknndskc1f3IMeKLW6PqdprBMHMqSTQ7gcmlcx7jZMxmyeTTBXRqwDh5p044MJHrf&date=&lut=&isJSONP=true&_=1506409621930'
+    )
+  }
+  getStatsData() {
+    return Axios.get(
+      'http://www.hasilskor.com/API/JSON.aspx?callback=callbackJSON&sport=soccerDB&s=26PDpiffaaBbGrBdfgnrK2pknndskc1f3IMeKLW6PqdprBMHMqSTQ7gcmlcx7jZMxmyeTTBXRqwDh5p044MJHrf&date=&lut=&isJSONP=true&_=1506412139882'
+    )
+  }
+  getMatchLiveScore() {
+    return Axios.get(
+      'http://www.hasilskor.com/API/JSON.aspx?sport=soccer&s=26PDpiffaaBbGrBdfgnrK2pknndskc1f3IMeKLW6PqdprBMHMqSTQ7gcmlcx7jZMxmyeTTBXRqwDh5p044MJHrf'
+    )
+  }
+  getLiveScore(app) {
+    var self = this
+    Axios.all([this.getTimeLineData(), this.getStatsData(), this.getMatchLiveScore()]).then(
+      Axios.spread(function(timeline, stats, {data}) {
+        var colLeftData = []
+        var colRightData = []
+        var leagueLiveScore = _.union(_.map(data.r, x => x[5]))
+        leagueLiveScore.forEach(el => {
+          var dataFilter = _.filter(data.r, {[5]: el})
+          if (colLeftData.length == colRightData.length || colLeftData.length < colRightData.length) {
+            colLeftData = _.concat(colLeftData, dataFilter)
+          } else {
+            colRightData = _.concat(colRightData, dataFilter)
+          }
+        })
+        app.setLeagueLiveSocre(leagueLiveScore)
+        app.setDataLiveScore({
+          rightData: colRightData,
+          leftData: colLeftData,
+          matchStats: self.formatJsonP(stats.data),
+          matchTimeLine: self.formatJsonP(timeline.data),
+        })
+        console.log(self.formatJsonP(timeline.data))
+      })
+    )
+  }
+  async getDataLiveScore() {
+    const timeline = await Axios.get(
+      'http://www.hasilskor.com/API/JSON.aspx?callback=callbackJSON&sport=soccerDA&s=26PDpiffaaBbGrBdfgnrK2pknndskc1f3IMeKLW6PqdprBMHMqSTQ7gcmlcx7jZMxmyeTTBXRqwDh5p044MJHrf&date=&lut=&isJSONP=true&_=1506409621930'
+    )
+    const stats = await Axios.get(
+      'http://www.hasilskor.com/API/JSON.aspx?callback=callbackJSON&sport=soccerDB&s=26PDpiffaaBbGrBdfgnrK2pknndskc1f3IMeKLW6PqdprBMHMqSTQ7gcmlcx7jZMxmyeTTBXRqwDh5p044MJHrf&date=&lut=&isJSONP=true&_=1506412139882'
     )
   }
   isExpired(prediction) {
@@ -54,6 +139,9 @@ class GetData {
       }
     }
     return isExpired
+  }
+  formatJsonP(val) {
+    return JSON.parse(val.replace('callbackJSON(', '').replace(/\)$/g, ''))
   }
 }
 export default GetData

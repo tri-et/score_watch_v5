@@ -41,6 +41,9 @@ import matchpregame from './matchPregame'
 import pregameprediction from './pregamePrediction'
 import overunderpregame from './overUnderPregame'
 import pred_gold from '@/assets/imgs/pred_gold.svg'
+import lose_icon from '@/assets/imgs/lose_icon@1x.svg'
+import win_icon from '@/assets/imgs/win_icon@1x.svg'
+import draw_icon from '@/assets/imgs/draw_icon@1x.svg'
 import {mapGetters, mapActions} from 'vuex'
 export default {
   props: {
@@ -60,6 +63,21 @@ export default {
         color: '#000',
         imgUrl: pred_gold,
       },
+      lose: {
+        imgUrl: lose_icon,
+        backgroundColor: '#F0F0F0',
+        color: 'rgba(51,51,51,.45)',
+      },
+      win: {
+        imgUrl: win_icon,
+        backgroundColor: '#69AE72',
+        color: '#FFF',
+      },
+      draw: {
+        imgUrl: draw_icon,
+        backgroundColor: '#F0F0F0',
+        color: 'rgba(51,51,51,.45)',
+      },
       active: {
         border: '',
       },
@@ -67,7 +85,7 @@ export default {
   },
   computed: {
     ...mapGetters('boxsearch', ['getFilterTeamName']),
-    ...mapGetters('detailpredictions', ['getDataDetail']),
+    ...mapGetters('detailpredictions', ['getDataDetail', 'getCurrentType']),
   },
   components: {
     matchpregame,
@@ -116,6 +134,69 @@ export default {
         this.active.border = '1px solid #5bb6e7'
       }
     },
+    setbgPregame() {
+      switch (this.type) {
+        case 'expired':
+          let hdp = parseFloat(this.match.sys_hdp)
+          let score_home = parseInt(this.match.score_home) + (hdp > 0 ? hdp : 0)
+          let score_away = parseInt(this.match.score_away) + (hdp < 0 ? Math.abs(hdp) : 0)
+          if (this.match.pick_hdp == 'H') {
+            if (score_home > score_away) {
+              this.bgpre = this.win
+            } else if (score_home < score_away) {
+              this.bgpre = this.lose
+            } else {
+              this.bgpre = this.draw
+            }
+          } else {
+            if (score_away > score_home) {
+              this.bgpre = this.win
+            } else if (score_away < score_home) {
+              this.bgpre = this.lose
+            } else {
+              this.bgpre = this.draw
+            }
+          }
+          break
+      }
+    },
+    setgbOver() {
+      let ou = parseFloat(this.match.sys_ou)
+      let finalsocre = parseInt(this.match.score_home) + parseInt(this.match.score_away)
+      if (this.type == 'expired') {
+        switch (this.match.pick_ou) {
+          case 'O':
+            if (finalsocre > ou) {
+              this.bgover = this.win
+            } else if (finalsocre < ou) {
+              this.bgover = this.lose
+            } else {
+              this.bgover = this.draw
+            }
+            break
+          default:
+            if (ou > finalsocre) {
+              this.bgover = this.win
+            } else if (ou < finalsocre) {
+              this.bgover = this.lose
+            } else {
+              this.bgover = this.draw
+            }
+            break
+        }
+      }
+    },
+  },
+  created() {
+    this.setbgPregame()
+    this.setgbOver()
+
+    //set border stype at first load
+    if (this.type == 'expired') {
+      this.active.border = '1px solid #767676'
+    } else {
+      this.active.border = '1px solid #5bb6e7'
+    }
   },
   mounted() {
     this.setMarquee()

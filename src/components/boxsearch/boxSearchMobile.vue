@@ -1,31 +1,48 @@
 <template>
   <div class="box-search-mobile" :class="{'disableBoxSearchMobile':getIsMobile && getIsSearching}">
     <div class="inputSearch">
-      <div><input type="text"></div>
+      <div><input type="text" placeholder="Search here" @input="searchTeamName($event.target.value)"></div>
       <div class="closeBt" @click="clickSearch()">
         <i class="material-icons">clear</i>
+      </div>
+    </div>
+    <div class="searchTerm">
+      <div>Search Term</div>
+      <div @click="closeOpenLeagueMobile(true)">
+        <span>{{getFilterTeamName == ''?'None':getFilterTeamName}}</span>
       </div>
     </div>
     <div class="filterLeague">
       <div>Filter by League</div>
       <div @click="closeOpenLeagueMobile(true)">
-        <span>None</span>
+        <span>{{setStatusSelected()}}</span>
         <i class="material-icons">expand_more</i>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+import {mapGetters, mapActions} from 'vuex'
 export default {
   computed: {
-    ...mapGetters("menuheader", ["getIsSearching", "getIsMobile"])
+    ...mapGetters('menuheader', ['getIsSearching', 'getIsMobile']),
+    ...mapGetters('boxsearch', ['getchekedLeagueName', 'getFilterTeamName']),
+    ...mapGetters('datapredictions', ['getLeaguePrediction']),
   },
   methods: {
-    ...mapActions("menuheader",["clickSearch"]),
-    ...mapActions("boxsearch",["closeOpenLeagueMobile"])
-  }
-};
+    ...mapActions('menuheader', ['clickSearch']),
+    ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'searchTeamName']),
+    setStatusSelected() {
+      if (this.getchekedLeagueName != null && this.getLeaguePrediction != null) {
+        if (this.getchekedLeagueName.length == this.getLeaguePrediction.length) {
+          return 'None'
+        } else {
+          return this.getchekedLeagueName.length + ' Selected'
+        }
+      }
+    },
+  },
+}
 </script>
 <style lang="scss" scoped>
 .box-search-mobile {
@@ -57,16 +74,19 @@ export default {
     color: #fff;
   }
 }
-.filterLeague {
+.filterLeague,
+.searchTerm {
   background-color: #333;
-  height: 40px;
+  height: 35px;
   color: #fff;
   display: flex;
   align-items: center;
   padding: 0 10px;
+  font-size: 14px;
   div:first-child {
     flex: 1;
     text-align: left;
+    opacity: 0.34;
   }
 
   div:nth-child(2) {
@@ -74,6 +94,9 @@ export default {
     align-items: center;
     cursor: pointer;
   }
+}
+.searchTerm {
+  border-bottom: 0.7px solid hsla(0, 0%, 100%, 0.1);
 }
 .closeBt {
   color: #fff;
@@ -86,7 +109,7 @@ export default {
 }
 .disableBoxSearchMobile {
   visibility: visible;
-  height: 104px;
+  height: 135px;
 }
 </style>
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="predictions">
+  <div class="predictions" :class="{'top':getIsMobile && getIsSearching}">
     <!-- {{this.$root.browserWidth}} -->
     <div class="left-col">
       <calendar></calendar>
-      <div class="predictions-container">
+      <div class="predictions-container" :class="{'max-height-prediction':getIsMobile && getIsSearching}">
         <div class="inplay">
           <headerpre type="inplay">inplay</headerpre>
           <nomatches :class="{'hide_no_matches':filterLeagueInPlay.length!=0}"></nomatches>
@@ -28,7 +28,7 @@
             </div>
           </template>
         </div>
-        <div class="pregame " @click="hideDetail(false) ">
+        <div class="pregame">
           <headerpre type="pregame">pregame</headerpre>
           <nomatches :class="{ 'hide_no_matches':filterLeaguePregame.length!=0} "></nomatches>
           <template v-for="(league,index) in filterLeaguePregame ">
@@ -47,7 +47,7 @@
               <span>{{league}}</span>
             </leaguenamepre>
             <div class="match_container " :key="index+ 'macth_container_pregame_exp' " :class="{ 'last':filterLeaguePregameExp.length==index+1} ">
-              <matchpregamecontainer type="expired " v-for="(match,index) in filterHomeAwayNamePre " :match="match " :key="index+ 'match_pre_exp' " v-if="league==match.league&&match.match_period=='FT' ">
+              <matchpregamecontainer type="expired" v-for="(match,index) in filterHomeAwayNamePre " :match="match " :key="index+ 'match_pre_exp' " v-if="league==match.league&&match.match_period=='FT' ">
               </matchpregamecontainer>
             </div>
           </template>
@@ -72,8 +72,9 @@ import nomatches from './noMatches'
 import matchpregamecontainer from './pregame/matchPregameContainer'
 export default {
   computed: {
+    ...mapGetters('menuheader', ['getIsSearching', 'getIsMobile']),
     ...mapGetters('boxsearch', ['getchekedLeagueName', 'getFilterTeamName']),
-    ...mapGetters('detailpredictions', ['getIsHideDetail']),
+    ...mapGetters('detailpredictions', ['getIsHideDetail', 'getDataDetail']),
     ...mapGetters('datapredictions', [
       'getLeaguePrediction',
       'getMatchInPlay',
@@ -131,11 +132,13 @@ export default {
       'setDataLeaguePregame',
       'setDataLeaguePregameExp',
     ]),
+    ...mapActions('detailpredictions', ['setDataDetail']),
     checkLeagueInPlay(data) {
       var self = this
       var league = _.filter(data, ({league, match_period, isExpired}) => {
         return _.includes(self.getchekedLeagueName, league) && match_period != 'FT' && !isExpired
       })
+      this.setDataDefault(league, 'inplay')
       return _.union(_.map(league, 'league'))
     },
     checkLeagueInPlayExp(data) {
@@ -143,6 +146,7 @@ export default {
       var league = _.filter(data, ({league, match_period, isExpired}) => {
         return _.includes(self.getchekedLeagueName, league) && (match_period == 'FT' || isExpired)
       })
+      this.setDataDefault(league, 'inplayExp')
       return _.union(_.map(league, 'league'))
     },
     checkLeaguePregame(data) {
@@ -150,6 +154,7 @@ export default {
       var league = _.filter(data, ({league, match_period}) => {
         return _.includes(self.getchekedLeagueName, league) && match_period != 'FT'
       })
+      this.setDataDefault(league, 'pregame')
       return _.union(_.map(league, 'league'))
     },
     checkLeaguePregameExp(data) {
@@ -157,7 +162,44 @@ export default {
       var league = _.filter(data, ({league, match_period}) => {
         return _.includes(self.getchekedLeagueName, league) && match_period == 'FT'
       })
+      this.setDataDefault(league, 'pregameExp')
       return _.union(_.map(league, 'league'))
+    },
+    setDataDefault(value, type) {
+      if (this.getFilterTeamName != '' || _.isEmpty(this.getDataDetail)) {
+        switch (type) {
+          case 'inplay':
+            if (value.length != 0) {
+              this.setDataDetail({data: value[0], type: 'inplay'})
+            }
+            break
+          case 'pregame':
+            if (this.filterLeagueInPlay.length == 0) {
+              if (value.length != 0) {
+                this.setDataDetail({data: value[0], type: 'pregame'})
+              }
+            }
+            break
+          case 'inplayExp':
+            if (this.filterLeagueInPlay.length == 0 && this.filterLeaguePregame.length == 0) {
+              if (value.length != 0) {
+                this.setDataDetail({data: value[0], type: 'expired'})
+              }
+            }
+            break
+          case 'pregameExp':
+            if (
+              this.filterLeagueInPlay.length == 0 &&
+              this.filterLeaguePregame.length == 0 &&
+              this.filterLeagueInPlayExp.length == 0
+            ) {
+              if (value.length != 0) {
+                this.setDataDetail({data: value[0], type: 'expired'})
+              }
+            }
+            break
+        }
+      }
     },
   },
   components: {
@@ -177,6 +219,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.top {
+  top: 135px !important;
+}
+.max-height-prediction {
+  max-height: calc(100% - 199px) !important;
+}
 .predictions {
   background-color: #444;
   top: 64px;
@@ -184,6 +232,7 @@ export default {
   width: 100%;
   display: flex;
   height: 100%;
+  transition: top 0.5s;
 }
 .left-col {
   position: relative;
@@ -214,7 +263,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   height: 100%;
   width: 100%;
-  transition: width .5s;
+  transition: width 0.2s;
 }
 .hide-right-col {
   width: 0;

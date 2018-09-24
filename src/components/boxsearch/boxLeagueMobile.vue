@@ -12,10 +12,18 @@
     <div class="inPut-search">
       <input type="text" placeholder="Search league" v-model="filterLeagueTxt">
     </div>
-    <div class="search-result">
+    <div v-if="getActiveMenu=='predictions'" class="search-result">
       <ul>
         <li v-for="(league,index) in filterleague" :key="index+'leaguemobi'">
           <input type="checkbox" :value="league" :id="league" v-model="checkedLeagueMobi" @change="updateCheckall()">
+          <label :for="league">{{league}}</label>
+        </li>
+      </ul>
+    </div>
+    <div v-else class="search-result">
+      <ul>
+        <li v-for="(league,index) in filterLeagueLiveMobi" :key="index+league">
+          <input type="checkbox" :value="league" :id="league" v-model="checkedLeagueLiveMobi" @change="updateCheckAllMobiLive()">
           <label :for="league">{{league}}</label>
         </li>
       </ul>
@@ -29,12 +37,14 @@ export default {
     return {
       filterLeagueTxt: '',
       checkedLeagueMobi: [],
+      checkedLeagueLiveMobi: [],
     }
   },
   computed: {
     ...mapGetters('boxsearch', ['getIsOpenLeagueMobile']),
-    ...mapGetters('menuheader', ['getIsMobile']),
+    ...mapGetters('menuheader', ['getIsMobile', 'getActiveMenu']),
     ...mapGetters('datapredictions', ['getLeaguePrediction']),
+    ...mapGetters('datalivescore', ['getLeagueLiveScore']),
     filterleague() {
       if (this.getLeaguePrediction != null) {
         return this.getLeaguePrediction.filter(el => {
@@ -42,11 +52,23 @@ export default {
         })
       }
     },
+    filterLeagueLiveMobi() {
+      if (this.getLeagueLiveScore != null) {
+        return this.getLeagueLiveScore.filter(el => {
+          return el.match(new RegExp(this.filterLeagueTxt, 'gi'))
+        })
+      }
+    },
   },
   methods: {
-    ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'checkLeague']),
+    ...mapActions('boxsearch', ['closeOpenLeagueMobile', 'checkLeague', 'checkLeagueLive']),
     updateCheckall() {
       this.checkLeague(this.checkedLeagueMobi.length == 0 ? this.getLeaguePrediction : this.checkedLeagueMobi)
+    },
+    updateCheckAllMobiLive() {
+      this.checkLeagueLive(
+        this.checkedLeagueLiveMobi.length == 0 ? this.getLeagueLiveScore : this.checkedLeagueLiveMobi
+      )
     },
     closeLeagueFilter() {
       this.closeOpenLeagueMobile(false)

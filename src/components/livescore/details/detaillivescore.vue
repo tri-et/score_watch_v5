@@ -6,14 +6,16 @@
     </div>
     <leaguenamedetail :data="getLiveScoreDetail"></leaguenamedetail>
     <scoretime :data="getLiveScoreDetail"></scoretime>
-    <timestats>
-      <span slot="timestats">stats</span>
-    </timestats>
-    <statsdetail></statsdetail>
-    <timestats>
-      <span slot="timestats">timeline</span>
-    </timestats>
-    <timeline></timeline>
+    <div class="detail-timeline-stats">
+      <timestats>
+        <span slot="timestats">stats</span>
+      </timestats>
+      <statsdetail></statsdetail>
+      <timestats>
+        <span slot="timestats">timeline</span>
+      </timestats>
+      <timeline></timeline>
+    </div>
   </div>
 </template>
 <script>
@@ -67,6 +69,11 @@ export default {
 }
 .hide-header {
   display: none;
+}
+.detail-timeline-stats {
+  -webkit-overflow-scrolling: touch;
+  height: calc(100% - 227px);
+  overflow-x: hidden;
 }
 </style>
 

@@ -53,6 +53,14 @@
           </template>
         </div>
         <div class="footer ">All Right Reserved. © 2018. Powered by In-Play</div>
+        <div class="loading-pre" :class="{'show-loading':getHideLoading}">
+          <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="right-col " :class="{ 'hide-right-col':getIsHideDetail} ">
@@ -83,6 +91,8 @@ export default {
       'getLeagueInPlayExp',
       'getLeaguePregame',
       'getLeaguePregameExp',
+      'getIpAddress',
+      'getHideLoading',
     ]),
     filterLeagueInPlayExp() {
       return this.checkLeagueInPlayExp(this.filterHomeAwayName)
@@ -131,8 +141,12 @@ export default {
       'setDataLeagueInplayExp',
       'setDataLeaguePregame',
       'setDataLeaguePregameExp',
+      'setIpAddress',
+      'setLinkLiveCast',
+      'setHideLoading',
     ]),
     ...mapActions('detailpredictions', ['setDataDetail']),
+    ...mapActions('boxsearch', ['checkLeague']),
     checkLeagueInPlay(data) {
       var self = this
       var league = _.filter(data, ({league, match_period, isExpired}) => {
@@ -177,6 +191,11 @@ export default {
             if (this.filterLeagueInPlay.length == 0) {
               if (value.length != 0) {
                 this.setDataDetail({data: value[0], type: 'pregame'})
+                this.$root.GetData.getLiveCast(
+                  value[0].rb_id != '' ? value[0].rb_id : value[0].idmatch,
+                  this.getIpAddress,
+                  this
+                )
               }
             }
             break
@@ -184,6 +203,11 @@ export default {
             if (this.filterLeagueInPlay.length == 0 && this.filterLeaguePregame.length == 0) {
               if (value.length != 0) {
                 this.setDataDetail({data: value[0], type: 'expired'})
+                this.$root.GetData.getLiveCast(
+                  value[0].rb_id != '' ? value[0].rb_id : value[0].idmatch,
+                  this.getIpAddress,
+                  this
+                )
               }
             }
             break
@@ -195,6 +219,11 @@ export default {
             ) {
               if (value.length != 0) {
                 this.setDataDetail({data: value[0], type: 'expired'})
+                this.$root.GetData.getLiveCast(
+                  value[0].rb_id != '' ? value[0].rb_id : value[0].idmatch,
+                  this.getIpAddress,
+                  this
+                )
               }
             }
             break
@@ -215,10 +244,27 @@ export default {
     var today = new Date()
     var dateselected = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate()
     this.$root.GetData.getInPlayPreGame(this, dateselected)
+    this.$root.GetData.getIpAddress(this)
   },
 }
 </script>
 <style lang="scss" scoped>
+.show-loading {
+  display: flex !important;
+}
+.loading-pre {
+  background-color: #000;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: none;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.6;
+  max-height: calc(100vh - 128px);
+  top: 64px;
+}
 .top {
   top: 135px !important;
 }
@@ -232,7 +278,7 @@ export default {
   width: 100%;
   display: flex;
   height: 100%;
-  transition: top 0.5s;
+  transition: top 0.2s;
 }
 .left-col {
   position: relative;
@@ -308,6 +354,42 @@ export default {
 }
 .hide_no_matches {
   display: none !important;
+}
+.loading-active {
+  display: block !important;
+}
+.lds-ring {
+  width: 45px;
+  height: 45px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin: 6px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 @media (min-width: 320px) {
   .right-col {

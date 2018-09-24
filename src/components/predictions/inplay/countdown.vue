@@ -16,7 +16,7 @@ export default {
     checkExpired() {
       var expTime = new Date().getTime() - new Date(this.item.time).getTime()
       if (parseInt(this.item.minutes) < 70) {
-        if (expTime < 600000) {
+        if (expTime < 600000 && expTime > 0) {
           this.countdown = 600000 - expTime
           this.runcountdown()
         } else if (expTime > 600000 && expTime < 780000) {
@@ -24,7 +24,7 @@ export default {
           this.remainExpired()
         }
       } else {
-        if (expTime < 180000) {
+        if (expTime < 180000 && expTime > 0) {
           this.countdown = 180000 - expTime
           this.runcountdown()
         } else if (expTime > 180000 && expTime < 360000) {

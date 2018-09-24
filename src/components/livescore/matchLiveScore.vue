@@ -1,13 +1,14 @@
 <template>
-  <div class="match_live_score" @click="liveSelected()">
+  <div class="match_live_score" @click="liveSelected()" :style="{'border-color':match[0]==getLiveScoreDetail[0]?match[7]:'transparent'}">
+    <!-- :class="{'border':}" -->
     <div>
       <span :style="bg" v-if="match[4]=='HT'">45</span>
       <span :style="bg" v-else>{{match[4]|filterTime(matchDate(match[10],bg))}}</span>
       <span :style="bg">{{match[3]|filterStatus(matchDate(match[10]),bg)}}</span>
     </div>
     <div>
-      <span>{{match[8]}}</span>
-      <span>{{match[9]}}</span>
+      <span v-html="this.$options.filters.highlight(match[8],this.getFilterTeamName)"></span>
+      <span v-html="this.$options.filters.highlight(match[9],this.getFilterTeamName)"></span>
     </div>
     <div>
       <span>{{match[12]}}</span>
@@ -62,6 +63,10 @@ export default {
       return st
     },
   },
+  computed: {
+    ...mapGetters('boxsearch', ['getFilterTeamName']),
+    ...mapGetters('datalivescore', ['getLiveScoreDetail']),
+  },
   methods: {
     ...mapActions('detailpredictions', ['hideDetail']),
     ...mapActions('datalivescore', ['setDataLiveScoreDetail']),
@@ -85,6 +90,8 @@ export default {
   box-shadow: 0 -1px 5px -1px rgba(0, 0, 0, 0.2);
   font-size: 14px;
   padding: 7px 0;
+  border-style: solid;
+  border-width: 1px;
   cursor: pointer;
   width: -webkit-fill-available;
   div {
@@ -103,6 +110,9 @@ export default {
     width: 30px;
     text-align: center;
   }
+}
+.border {
+  border: 1px solid #000;
 }
 </style>
 

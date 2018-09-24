@@ -1,9 +1,9 @@
-<template>
+q<template>
   <div class="box-league-desktop" :class="{'show-league-desktop':getIsOpenLeagueDeskTop}">
     <div class="header-league-desk">
       <input type="text" placeholder="Search league" v-model="filterLeagueTxt">
     </div>
-    <div class="league-content-desk">
+    <div v-if="getActiveMenu=='predictions'" class="league-content-desk">
       <ul>
         <li>
           <input type="checkbox" value="All" id="All" @click="checkAll()" v-model="isCheckAll">
@@ -15,65 +15,113 @@
         </li>
       </ul>
     </div>
+    <div v-else class="league-content-desk">
+      <ul>
+        <li>
+          <input type="checkbox" value="All" id="All" @click="checkAllLive()" v-model="isCheckAllLive">
+          <label for="ALL">ALL</label>
+        </li>
+        <li v-for="(league,index) in filterLeagueLive" :key="index+'leaguepre'">
+          <input type="checkbox" :value="league" v-model="checkedLeagueLive" @change="updateCheckAllLive()" :id="league">
+          <label :for="league">{{league}}</label>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
-import _ from "lodash";
+import {mapGetters, mapActions} from 'vuex'
+import _ from 'lodash'
 export default {
   data() {
     return {
-      filterLeagueTxt: "",
+      filterLeagueTxt: '',
       isCheckAll: true,
-      checkedLeague: []
-    };
+      isCheckAllLive: true,
+      checkedLeague: [],
+      checkedLeagueLive: [],
+    }
   },
   computed: {
-    ...mapGetters("boxsearch", [
-      "getIsOpenLeagueDeskTop",
-      "getchekedLeagueName"
-    ]),
-    ...mapGetters("menuheader", ["getIsSearching"]),
-    ...mapGetters("datapredictions", ["getLeaguePrediction"]),
+    ...mapGetters('boxsearch', ['getIsOpenLeagueDeskTop', 'getchekedLeagueName']),
+    ...mapGetters('menuheader', ['getIsSearching', 'getActiveMenu']),
+    ...mapGetters('datapredictions', ['getLeaguePrediction']),
+    ...mapGetters('datalivescore', ['getLeagueLiveScore']),
     filterleague() {
       if (this.getLeaguePrediction != null) {
         return this.getLeaguePrediction.filter(el => {
-          return el.match(new RegExp(this.filterLeagueTxt, "gi"));
-        });
+          return el.match(new RegExp(this.filterLeagueTxt, 'gi'))
+        })
       }
-    }
+    },
+    filterLeagueLive() {
+      if (this.getLeagueLiveScore != null) {
+        return this.getLeagueLiveScore.filter(el => {
+          return el.match(new RegExp(this.filterLeagueTxt, 'gi'))
+        })
+      }
+    },
   },
   methods: {
-    ...mapActions("boxsearch", ["checkLeague"]),
+    ...mapActions('boxsearch', ['checkLeague', 'checkLeagueLive']),
     checkAll() {
-      this.isCheckAll = !this.isCheckAll;
+      this.isCheckAll = !this.isCheckAll
       if (this.isCheckAll) {
-        this.checkLeague(this.getLeaguePrediction);
-        this.checkedLeague = _.clone(this.getLeaguePrediction);
+        this.checkLeague(this.getLeaguePrediction)
+        this.checkedLeague = _.clone(this.getLeaguePrediction)
       } else {
-        this.checkLeague([]);
-        this.checkedLeague = [];
+        this.checkLeague([])
+        this.checkedLeague = []
+      }
+    },
+    checkAllLive() {
+      this.isCheckAllLive = !this.isCheckAllLive
+      if (this.isCheckAllLive) {
+        this.checkLeagueLive(this.getLeagueLiveScore)
+        this.checkedLeagueLive = _.clone(this.getLeagueLiveScore)
+      } else {
+        this.checkLeagueLive([])
+        this.checkedLeagueLive = []
       }
     },
     updateCheckall() {
       if (this.checkedLeague.length == this.getLeaguePrediction.length) {
-        this.isCheckAll = true;
+        this.isCheckAll = true
       } else {
-        this.isCheckAll = false;
+        this.isCheckAll = false
       }
-      this.checkLeague(this.checkedLeague);
-    }
+      this.checkLeague(this.checkedLeague)
+    },
+    updateCheckAllLive() {
+      if (this.checkedLeagueLive.length == this.getLeagueLiveScore.length) {
+        this.isCheckAllLive = true
+      } else {
+        this.isCheckAllLive = false
+      }
+      this.checkLeagueLive(this.checkedLeagueLive)
+    },
   },
   watch: {
     getLeaguePrediction(newData, oldData) {
-      if (oldData == null) {
-        // set checked default
-        this.checkedLeague = _.clone(this.getLeaguePrediction);
-        this.checkLeague(this.getLeaguePrediction);
+      // if (oldData == null) {
+      //   // set checked default
+      //   this.checkedLeague = _.clone(this.getLeaguePrediction)
+      //   this.checkLeague(this.getLeaguePrediction)
+      // }
+      var items = _.difference(newData, oldData)
+      if (items.length != 0) {
+        this.checkedLeague = _.clone(this.getLeaguePrediction)
+        this.checkLeague(this.getLeaguePrediction)
       }
-    }
-  }
-};
+    },
+    getLeagueLiveScore(newData, oldData) {
+      if (oldData.length == 0) {
+        this.checkedLeagueLive = _.clone(this.getLeagueLiveScore)
+        this.checkLeagueLive(this.getLeagueLiveScore)
+      }
+    },
+  },
+}
 </script>
 <style lang="scss" scoped>
 .box-league-desktop {

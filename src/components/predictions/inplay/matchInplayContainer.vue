@@ -1,8 +1,11 @@
 <template>
   <div class="match_pre_container" @click="matchSelected()" :style="match.idmatch==getDataDetail.idmatch?active:''">
-    <matchpre>
+    <matchpre :type="type" :matchperiod="match.match_period">
+      <template slot="timelive">
+        <span>{{`${match.match_minute}\'`}}</span>
+        <span>{{match.match_period|filterMatchTime}}</span>
+      </template>
       <template slot="match_time_ft">
-        <span>FT</span>
         <span>{{match.match_dt|filterDateTime}}</span>
       </template>
       <template slot="match_team">
@@ -44,6 +47,7 @@ import pred_gold from '@/assets/imgs/pred_gold.svg'
 import lose_icon from '@/assets/imgs/lose_icon@1x.svg'
 import win_icon from '@/assets/imgs/win_icon@1x.svg'
 import draw_icon from '@/assets/imgs/draw_icon@1x.svg'
+import _ from 'lodash'
 import {mapGetters, mapActions} from 'vuex'
 export default {
   props: {
@@ -92,11 +96,30 @@ export default {
   computed: {
     ...mapGetters('boxsearch', ['getFilterTeamName']),
     ...mapGetters('detailpredictions', ['getDataDetail']),
+    ...mapGetters('datapredictions', ['getIpAddress']),
   },
   filters: {
     filterDateTime(value) {
       var date = new Date(value.replace(/-/g, '/'))
       return date.getHours() + ':' + (date.getMinutes() == 0 ? '00' : date.getMinutes())
+    },
+    filterMatchTime(value) {
+      var time = ''
+      switch (value) {
+        case 'HT':
+          time = 'HT'
+          break
+        case 'Part2':
+          time = '2H'
+          break
+        case 'Part1':
+          time = '1H'
+          break
+        default:
+          var matchPeriod = parseInt(value)
+          time = matchPeriod > 0 && matchPeriod < 45 ? '1H' : '2H'
+      }
+      return time
     },
   },
   methods: {
@@ -114,22 +137,23 @@ export default {
             parseInt(this.match.score_home) + (hdp > 0 ? hdp : 0) - parseInt(this.match.detail.score_home)
           let score_away =
             parseInt(this.match.score_away) + (hdp < 0 ? Math.abs(hdp) : 0) - parseInt(this.match.detail.score_away)
-
-          if (this.match.detail.pick_hdp == 'H') {
-            if (score_home > score_away) {
-              this.bginplay = this.win
-            } else if (score_home < score_away) {
-              this.bginplay = this.lose
+          if (this.match.match_period == 'FT') {
+            if (this.match.detail.pick_hdp == 'H') {
+              if (score_home > score_away) {
+                this.bginplay = this.win
+              } else if (score_home < score_away) {
+                this.bginplay = this.lose
+              } else {
+                this.bginplay = this.draw
+              }
             } else {
-              this.bginplay = this.draw
-            }
-          } else {
-            if (score_away > score_home) {
-              this.bginplay = this.win
-            } else if (score_away < score_home) {
-              this.bginplay = this.lose
-            } else {
-              this.bginplay = this.draw
+              if (score_away > score_home) {
+                this.bginplay = this.win
+              } else if (score_away < score_home) {
+                this.bginplay = this.lose
+              } else {
+                this.bginplay = this.draw
+              }
             }
           }
           break
@@ -138,7 +162,7 @@ export default {
     setgbOver() {
       let ou = parseFloat(this.match.detail.sys_ou)
       let finalsocre = parseInt(this.match.score_home) + parseInt(this.match.score_away)
-      if (this.type == 'expired') {
+      if (this.type == 'expired' && this.match.match_period == 'FT') {
         switch (this.match.detail.pick_ou) {
           case 'O':
             if (finalsocre > ou) {
@@ -163,6 +187,11 @@ export default {
     },
     matchSelected() {
       this.hideDetail(false)
+      this.$root.GetData.getLiveCast(
+        this.match.rb_id != '' ? this.match.rb_id : this.match.idmatch,
+        this.getIpAddress,
+        this.$parent
+      )
       this.setDataDetail({data: this.match, type: this.type})
       if (this.type == 'expired') {
         this.active.border = '1px solid #767676'
@@ -186,6 +215,17 @@ export default {
     this.$root.$on('browserResize', function(data) {
       seft.setMarquee()
     })
+  },
+  watch: {
+    match: {
+      handler(val) {
+        if (val.match_period == 'FT') {
+          this.setbgInPlay()
+          this.setgbOver()
+        }
+      },
+      deep: true,
+    },
   },
 }
 </script>

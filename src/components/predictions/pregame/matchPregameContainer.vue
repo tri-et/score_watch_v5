@@ -22,7 +22,8 @@
         <span :class="{'marquee':marquee}">{{match.pick_hdp=="H"?match.team_home.trim():match.team_away.trim()}}</span>
       </template>
       <template slot="odd_score">
-        <span>{{'['+match.score_home+':'+match.score_away+'] '+match.sys_hdp+' @ '+(match.pick_hdp=="H"?match.sys_odds_home:match.sys_odds_away)}}</span>
+        <span v-show="type=='expired'">{{'['+match.score_home+':'+match.score_away+'] '}}</span>&nbsp;
+        <span>{{match.sys_hdp+' @ '+(match.pick_hdp=="H"?match.sys_odds_home:match.sys_odds_away)}}</span>
       </template>
     </pregameprediction>
     <overunderpregame :bg="bgover">
@@ -30,7 +31,8 @@
         <span>{{match.pick_ou=="O"?"over":"under"}}</span>
       </template>
       <template slot="odd_over_under">
-        <span>{{'['+match.score_home+':'+match.score_away+'] '+match.sys_hdp+' @'}}</span>
+        <span v-show="type=='expired'">{{'['+match.score_home+':'+match.score_away+'] '}}</span>&nbsp;
+        <span>{{match.sys_hdp+' @'}}</span>&nbsp;
         <span>{{match.pick_ou=="O"?match.sys_odds_over:match.sys_odds_under}}</span>
       </template>
     </overunderpregame>
@@ -86,6 +88,7 @@ export default {
   computed: {
     ...mapGetters('boxsearch', ['getFilterTeamName']),
     ...mapGetters('detailpredictions', ['getDataDetail', 'getCurrentType']),
+    ...mapGetters('datapredictions', ['getIpAddress']),
   },
   components: {
     matchpregame,
@@ -127,6 +130,11 @@ export default {
     },
     matchSelected() {
       this.hideDetail(false)
+      this.$root.GetData.getLiveCast(
+        this.match.rb_id != '' ? this.match.rb_id : this.match.idmatch,
+        this.getIpAddress,
+        this.$parent
+      )
       this.setDataDetail({data: this.match, type: this.type})
       if (this.type == 'expired') {
         this.active.border = '1px solid #767676'

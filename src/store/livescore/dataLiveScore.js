@@ -8,6 +8,7 @@ const state = {
   matchTimeLine: [],
   statsDetail: [],
   timelineDetail: [],
+  hideLoadingLive: true,
 }
 const getters = {
   getIsHideDetailLiveScore: state => {
@@ -36,6 +37,9 @@ const getters = {
   },
   getTimelineDetail: state => {
     return state.timelineDetail
+  },
+  getHideLoadingLive: state => {
+    return state.hideLoadingLive
   },
 }
 const mutations = {
@@ -66,6 +70,9 @@ const mutations = {
   mtTimelineDetail(state, value) {
     state.timelineDetail = value
   },
+  mtHideLoadingLive(state, value) {
+    state.hideLoadingLive = value
+  },
 }
 const actions = {
   hideDetail({commit}, value) {
@@ -90,6 +97,9 @@ const actions = {
     commit('setMatchesColLeft', value.leftData)
     commit('mtMatchStats', value.matchStats)
     commit('mtMatchTimeLine', value.matchTimeLine)
+  },
+  setHideLoadingLive({commit}, value) {
+    commit('mtHideLoadingLive', value)
   },
 }
 export default {

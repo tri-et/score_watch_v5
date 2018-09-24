@@ -1,13 +1,13 @@
 <template>
   <div class="match_pre">
-    <div class="match_time" style="display:none !important">
+    <div class="match_time" v-show="matchperiod!='FT'">
       <div class="icon-live"></div>
       <div>
-        <span>FT</span>
-        <span>22:00</span>
+        <slot name="timelive" />
       </div>
     </div>
-    <div class="match_time_ft">
+    <div class="match_time_ft" v-show="type!='inplay' && matchperiod=='FT'">
+      <span>FT</span>
       <slot name="match_time_ft" />
     </div>
     <div class="match_team">
@@ -20,7 +20,11 @@
 </template>
 <script>
 export default {
-};
+  props: {
+    type: [String],
+    matchperiod: [String],
+  },
+}
 </script>
 <style lang="scss" scoped>
 .match_pre {

@@ -5,7 +5,7 @@
     </div>
     <div class="date-content">
       <ul>
-        <li v-for="(item,index) in days" :key="index" :class="{'active-calendar-pre':getActiveCalendarPre==index}" @click="selectDate(index,$event,item)">
+        <li v-for="(item,index) in days" :key="index" :class="{'active-calendar-pre':getActiveCalendarPre==index,'futuredates':index>getActiveCalendarPre}" @click="selectDate(index,$event,item)">
           <div>
             <span>{{item|date}}</span>
             <span>{{item|day}}</span>
@@ -85,9 +85,7 @@ export default {
     selectDate(index, event, date) {
       this.activeCalendarPre(index)
       this.setDateCenter(event)
-      var convertDate = new Date(date)
-      var dateselected =
-        convertDate.getFullYear() + '-' + (parseInt(convertDate.getMonth()) + 1) + '-' + convertDate.getDate()
+      var dateselected =new Date(date).toISOString().split('T')[0]
       this.$root.GetData.getInPlayPreGame(this.$parent, dateselected)
     },
     setDateCenterFirsLoad() {
@@ -128,7 +126,7 @@ export default {
       color: #4e4e4e;
       font-weight: 500;
       width: 64px;
-      &:hover {
+      &:not(.futuredates):hover {
         color: #fff;
         cursor: pointer;
         background-color: #333;

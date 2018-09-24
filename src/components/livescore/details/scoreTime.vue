@@ -6,7 +6,7 @@
       </div>
       <div class="divided-circle" :class="setColor(data[26])">
         <div>
-          <span>56</span>
+          <span>{{data[4]|filterTime(matchDate(data[10]))}}</span>
         </div>
         <div>
           <span>Kickoff</span>
@@ -39,6 +39,15 @@ export default {
       activeStyle: 'knickoff',
     }
   },
+  filters: {
+    filterTime(val, match_dt) {
+      if (val == '') {
+        return match_dt
+      } else {
+        return val == 'FT' ? val : val + "'"
+      }
+    },
+  },
   methods: {
     setColor(val) {
       var styleCl = ''
@@ -58,6 +67,10 @@ export default {
           break
       }
       return styleCl
+    },
+    matchDate(value) {
+      var date = new Date(value.replace(/-/g, '/'))
+      return date.getHours() + ':' + (date.getMinutes() == 0 ? '00' : date.getMinutes())
     },
   },
 }

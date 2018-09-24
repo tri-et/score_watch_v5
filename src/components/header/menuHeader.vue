@@ -9,7 +9,7 @@
             </div>
           </li>
           <router-link to="/" tag="li" :class="{'hideMenuMobile':getIsMobile}">
-            <div class="item-menu" @click="menuSelect('predictions')">
+            <div class="item-menu" @click="menuSelected('predictions')">
               <div>
                 <span>predictions</span>
               </div>
@@ -17,7 +17,7 @@
             </div>
           </router-link>
           <router-link to="/livescore" tag="li" :class="{'hideMenuMobile':getIsMobile}">
-            <div class="item-menu" @click="menuSelect('live score')">
+            <div class="item-menu" @click="menuSelected('live score')">
               <div>
                 <span>live score</span>
               </div>
@@ -27,14 +27,14 @@
           <li :class="{'hideMenuMobile':!getIsMobile}">
             <div class="group-menu">
               <router-link to="/" tag="li" :class="{'active-menu-mobile':getActiveMenu=='predictions'}">
-                <div class="item-menu" @click="menuSelect('predictions')">
+                <div class="item-menu" @click="menuSelected('predictions')">
                   <div>
                     <span>prediction</span>
                   </div>
                 </div>
               </router-link>
               <router-link to="/livescore" tag="li" :class="{'active-menu-mobile':getActiveMenu=='live score'}">
-                <div class="item-menu" @click="menuSelect('live score')">
+                <div class="item-menu" @click="menuSelected('live score')">
                   <div>
                     <span>live score</span>
                   </div>
@@ -86,6 +86,9 @@ export default {
       this.closeOpenLeagueDeskTop(false)
       this.clickSearch(!this.getIsSearching)
     },
+    menuSelected(menuName){
+      this.menuSelect(menuName)
+    }
   },
   mounted() {
     var self = this

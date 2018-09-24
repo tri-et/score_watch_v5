@@ -42,7 +42,8 @@
     </div>
     <div class="odds-ou">
       <div class="livecenter">
-        d
+        <iframe scrolling="no" :src="getLinkLiveCast" width="360" height="360" style="border:none;overflow:hidden;z-index: -1;"></iframe>
+        <div class="mark-live"></div>
       </div>
       <oddouheader>
         <template slot="oddsou">
@@ -184,6 +185,7 @@ export default {
   computed: {
     ...mapGetters('detailpredictions', ['getIsHideDetail', 'getIsHideHeader', 'getDataDetail', 'getCurrentType']),
     ...mapGetters('menuheader', ['getIsSearching', 'getIsMobile']),
+    ...mapGetters('datapredictions', ['getLinkLiveCast']),
   },
   methods: {
     ...mapActions('detailpredictions', ['hideDetail']),
@@ -331,17 +333,26 @@ $circle-diameter: 64px;
   top: 237px !important;
 }
 .odds-ou {
-  // background-color: blueviolet;
+  -webkit-overflow-scrolling: touch;
   height: calc(100% - 284px);
   overflow-x: hidden;
-  // padding-top: 20px;
   ul {
     list-style: none;
   }
 }
 .livecenter {
-  background-color: aqua;
-  height: 300px;
+  background-color: #545454;
+  padding-top: 28px;
+  text-align: center;
+  position: relative;
+}
+.mark-live {
+  position: absolute;
+  width: 100%;
+  background-color: #000;
+  top: 0;
+  height: 100%;
+  opacity: 0.1;
 }
 </style>
 

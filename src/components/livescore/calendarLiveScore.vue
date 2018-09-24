@@ -5,7 +5,7 @@
     </div>
     <div class="date-content">
       <ul>
-        <li v-for="(item,index) in days" :key="index" :class="{'active-calendar-pre':getActiveCalendarPre==index}" @click="selectDate(index,$event)">
+        <li v-for="(item,index) in days" :key="index" :class="{'active-calendar-pre':getActiveCalendarLive==index,'futuredates':index>getActiveCalendarLive}" @click="selectDate(item,index,$event)">
           <div>
             <span>{{item|date}}</span>
             <span>{{item|day}}</span>
@@ -19,103 +19,93 @@
   </div>
 </template>
 <script>
-import $ from "jquery";
-import { mapGetters, mapActions } from "vuex";
+import $ from 'jquery'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   data() {
     return {
-      days: []
-    };
+      days: [],
+    }
   },
   computed: {
-    ...mapGetters("calendarpre", ["getActiveCalendarPre"])
+    ...mapGetters('calendarlive', ['getActiveCalendarLive']),
   },
   filters: {
     data() {
       return {
-        days: []
-      };
+        days: [],
+      }
     },
     date(val) {
-      var month_names_short = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ];
-      return month_names_short[val.getMonth()] + " " + val.getDate();
+      var month_names_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      return month_names_short[val.getMonth()] + ' ' + val.getDate()
     },
     day(val) {
-      var day_names_short = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      let today = new Date();
+      var day_names_short = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      let today = new Date()
       if (
         val.getFullYear() == today.getFullYear() &&
         val.getMonth() == today.getMonth() &&
         val.getDate() == today.getDate()
       ) {
-        return "Today";
+        return 'Today'
       }
-      return day_names_short[val.getDay()];
-    }
+      return day_names_short[val.getDay()]
+    },
   },
   methods: {
-    ...mapActions("calendarpre", ["activeCalendarPre"]),
+    ...mapActions('calendarlive', ['activeCalendarLive']),
     renderDays() {
-      var dateOfmonth = [];
+      var dateOfmonth = []
       for (var i = 16; i--; ) {
-        var today = new Date();
-        var preday = today.setDate(today.getDate() - i);
-        dateOfmonth.push(new Date(preday));
+        var today = new Date()
+        var preday = today.setDate(today.getDate() - i)
+        dateOfmonth.push(new Date(preday))
       }
-      var current = new Date();
+      var current = new Date()
       for (var i = 0; i < 15; i++) {
-        var nextday = current.setDate(current.getDate() + 1);
-        dateOfmonth.push(new Date(nextday));
+        var nextday = current.setDate(current.getDate() + 1)
+        dateOfmonth.push(new Date(nextday))
       }
-      this.days = dateOfmonth;
+      this.days = dateOfmonth
     },
     leftArrow() {
-      var el = this.$el.querySelector(".date-content");
-       $(el).animate({ scrollLeft: "-=64" });
+      var el = this.$el.querySelector('.date-content')
+      $(el).animate({scrollLeft: '-=64'})
     },
     rightArrow() {
-      var el = this.$el.querySelector(".date-content");
-      $(el).animate({ scrollLeft: "+=64" });
+      var el = this.$el.querySelector('.date-content')
+      $(el).animate({scrollLeft: '+=64'})
     },
     setDateCenter(event) {
-      var inner = this.$el.querySelector(".date-content");
-      var outer = event.currentTarget.offsetLeft;
-      inner.scrollLeft = outer - (inner.offsetWidth / 2 + 1.5);
+      var inner = this.$el.querySelector('.date-content')
+      var outer = event.currentTarget.offsetLeft
+      inner.scrollLeft = outer - (inner.offsetWidth / 2 + 1.5)
     },
-    selectDate(index, event) {
-      this.activeCalendarPre(index);
-      this.setDateCenter(event);
+    selectDate(item, index, event) {
+      this.activeCalendarLive(index)
+      this.setDateCenter(event)
+      var dateSelect = new Date(item).toISOString().split('T')[0]
+      var isToday = new Date().toDateString() === new Date(item).toDateString()
+      this.$root.GetData.getLiveScore(this.$parent, isToday ? '' : dateSelect)
     },
     setDateCenterFirsLoad() {
-      var inner = this.$el.querySelector(".date-content");
-      var outer = this.$el.querySelector(".active-calendar-pre");
-      inner.scrollLeft = outer.offsetLeft - (inner.offsetWidth / 2 + 1.5);
-    }
+      var inner = this.$el.querySelector('.date-content')
+      var outer = this.$el.querySelector('.active-calendar-pre')
+      inner.scrollLeft = outer.offsetLeft - (inner.offsetWidth / 2 + 1.5)
+    },
   },
   created() {
-    this.renderDays();
-    var seft = this;
-    this.$root.$on("browserResize", function(data) {
-      seft.setDateCenterFirsLoad();
-    });
+    this.renderDays()
+    var seft = this
+    this.$root.$on('browserResize', function(data) {
+      seft.setDateCenterFirsLoad()
+    })
   },
   mounted() {
-    this.setDateCenterFirsLoad();
-  }
-};
+    this.setDateCenterFirsLoad()
+  },
+}
 </script>
 <style lang="scss" scoped>
 .calendar {
@@ -137,7 +127,7 @@ export default {
       color: #4e4e4e;
       font-weight: 500;
       width: 64px;
-      &:hover {
+      &:not(.futuredates):hover {
         color: #fff;
         cursor: pointer;
         background-color: #333;

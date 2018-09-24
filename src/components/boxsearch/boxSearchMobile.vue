@@ -51,7 +51,7 @@ export default {
   width: 100%;
   visibility: hidden;
   overflow: hidden;
-  transition: height 0.5s, visibility 0.5s;
+  transition: height 0.2s, visibility 0.2s;
   height: 0px;
 }
 .inputSearch {

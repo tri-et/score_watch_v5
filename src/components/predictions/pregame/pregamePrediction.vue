@@ -15,9 +15,9 @@
 export default {
   props: {
     marquee: [Boolean],
-    bg: [Object]
-  }
-};
+    bg: [Object],
+  },
+}
 </script>
 <style lang="scss" scoped>
 .pregame_prediction {
@@ -28,7 +28,7 @@ export default {
   font-size: 14px;
   color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  img{
+  img {
     margin-bottom: -5px;
   }
   div:first-of-type {
